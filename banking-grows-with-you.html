@@ -49,7 +49,7 @@
     .stage-label { display: block; font-size: 10px; font-weight: 750; }
     .stage-signal { display: block; margin-top: 6px; color: #8190a4; font-size: 9px; line-height: 1.35; }
     .stage-button.active .stage-signal { color: #5270b3; }
-    .workspace { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(270px, .75fr); gap: 16px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(310px, .9fr); gap: 16px; align-items: start; }
     .panel { border: 1px solid #e8edf4; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow); }
     .main-panel { overflow: hidden; }
     .appbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid #edf0f5; background: #fff; }
@@ -158,6 +158,9 @@
     .card-actions { display: flex; flex-wrap: wrap; gap: 7px; }
     .side { display: grid; gap: 14px; }
     .side-card { padding: 17px; }
+    .life-tree-card { padding: 22px; }
+    .life-tree-card h2 { font-size: 16px; }
+    .life-tree-card .memory-list, .life-tree-card .history-list { gap: 11px; }
     .side-card h2 { margin: 0 0 5px; font-size: 14px; letter-spacing: -.025em; }
     .side-card > p { margin: 0 0 14px; color: var(--muted); font-size: 10px; line-height: 1.5; }
     .memory-list { display: grid; gap: 9px; }
@@ -326,7 +329,7 @@
       </section>
 
       <aside class="side">
-        <section class="panel side-card" aria-labelledby="treeTitle">
+        <section class="panel side-card life-tree-card" aria-labelledby="treeTitle">
           <h2 id="treeTitle">Your Life Tree</h2>
           <p>Small choices become a story you can carry forward.</p>
           <div class="tree-status"><span id="treeStatus">0 of 3 moments complete</span><strong id="treeMemoryCount">No memories yet</strong></div>
@@ -523,7 +526,7 @@
         visibleConversationLines.push(line);
         conversationIndex += 1;
         renderChat();
-        const pause = Math.min(4300, Math.max(1450, line[1].length * 19));
+        const pause = Math.min(8600, Math.max(2900, line[1].length * 38));
         conversationTimer = setTimeout(playNextConversationLine, pause);
       }
       function openToolPanel(tool) {
