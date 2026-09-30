@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
-  <title>KBC Future Me</title>
+  <title>KBC Nubis</title>
   <style>
     :root {
       --ink: #10213b;
@@ -116,11 +116,14 @@
     .conversation-head h3 { margin: 0 0 4px; font-size: 14px; letter-spacing: -.02em; }
     .conversation-head p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
     .conversation-title-row { display: flex; align-items: center; gap: 7px; }
-    .chat-microphone { position: relative; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 8px; color: #3974cf; background: #edf3ff; }
-    .chat-microphone::after { content: ""; position: absolute; inset: 3px; border: 1px solid #8aafff; border-radius: 7px; opacity: 0; animation: microphone-pulse 1.8s ease-out infinite; }
-    .chat-microphone svg { width: 12px; height: 12px; animation: microphone-bob 1.8s ease-in-out infinite; }
+    .conversation-player { position: relative; display: inline-grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 11px; color: #3974cf; background: #edf3ff; transition: .15s ease; }
+    .conversation-player:hover { color: #174aa5; background: #dde9ff; transform: translateY(-1px); }
+    .conversation-player::after { content: ""; position: absolute; inset: 4px; border: 1px solid #8aafff; border-radius: 9px; opacity: 0; animation: microphone-pulse 1.8s ease-out infinite; }
+    .conversation-player svg { width: 17px; height: 17px; animation: microphone-bob 1.8s ease-in-out infinite; }
+    .conversation-player.playing::after { animation-duration: .72s; }
+    .conversation-player.playing svg { animation-duration: .5s; }
     @keyframes microphone-pulse { 0%, 35% { opacity: .65; transform: scale(.75); } 70%, 100% { opacity: 0; transform: scale(1.22); } }
-    @keyframes microphone-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1px); } }
+    @keyframes microphone-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
     .memory-tag { flex: 0 0 auto; padding: 6px 8px; border-radius: 8px; color: var(--green); background: var(--green-soft); font-size: 9px; font-weight: 800; }
     .chat-log { display: grid; gap: 8px; max-height: 270px; overflow-y: auto; padding: 2px 2px 7px; }
     .chat-bubble { max-width: 88%; padding: 10px 12px; border-radius: 14px 14px 14px 4px; color: #314b6b; background: #f1f5fb; font-size: 12px; line-height: 1.5; }
@@ -128,6 +131,7 @@
     .chat-bubble.customer { justify-self: end; border-radius: 14px 14px 4px 14px; color: #fff; background: var(--blue); }
     .chat-label { display: block; margin-bottom: 4px; color: #6e86a7; font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
     .customer .chat-label { color: #dbe8ff; }
+    .script-placeholder { max-width: 88%; padding: 11px 12px; border: 1px dashed #c9d6e6; border-radius: 14px; color: #71839a; background: #fafcff; font-size: 11px; line-height: 1.45; }
     .chat-prompt { margin: 8px 0; color: #52647a; font-size: 10px; font-weight: 800; }
     .answers { display: flex; flex-wrap: wrap; gap: 6px; }
     .answer { border: 1px solid #dce4ef; border-radius: 999px; padding: 8px 10px; color: #3d5572; text-align: left; background: #fff; font-size: 10px; font-weight: 750; line-height: 1.3; transition: .15s; }
@@ -137,6 +141,7 @@
     .chat-composer input:focus { border-color: #7da5ff; outline: 0; box-shadow: 0 0 0 3px #0754f214; }
     .send { flex: 0 0 auto; border: 0; border-radius: 10px; padding: 10px 12px; color: #fff; background: var(--blue); font-size: 10px; font-weight: 850; }
     .chat-hint { margin: 7px 0 0; color: #8290a4; font-size: 9px; line-height: 1.4; }
+    .legacy-chat-controls { display: none; }
     .helper { color: #8290a4; font-size: 9px; line-height: 1.4; }
     .continue, .primary { border: 0; border-radius: 10px; padding: 10px 12px; color: #fff; background: var(--blue); font-size: 10px; font-weight: 850; }
     .continue[disabled] { opacity: .45; cursor: not-allowed; }
@@ -243,19 +248,19 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20v-8m0 0c0-4-3-6-7-6 0 4 2 7 7 7m0-2c0-4 3-6 7-6 0 4-2 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 21h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-        <div>KBC Future Me<span class="brand-sub">A proof of concept for banking that grows with you</span></div>
+        <div>KBC Nubis<span class="brand-sub">A proof of concept for banking that grows with you</span></div>
       </div>
       <button class="reset-button" id="resetButton" type="button">Reset demo</button>
     </header>
 
     <section class="hero">
       <div class="eyebrow">Talk to the person your choices are creating</div>
-      <h1>Your future self remembers what matters.</h1>
-      <p>Future Me notices meaningful moments, asks a useful question, and helps you carry your priorities from a first salary to a first home and eventually retirement.</p>
+      <h1>Nubis remembers what matters.</h1>
+      <p>Nubis notices meaningful moments, asks a useful question, and helps you carry your priorities from a first salary to a first home and eventually retirement.</p>
       <span class="demo-note">Synthetic customer · fictional signals · nothing is booked or shared</span>
     </section>
 
-    <nav class="journey" aria-label="Future Me life stages">
+    <nav class="journey" aria-label="Nubis life stages">
       <button class="stage-button active" data-stage="16" type="button"><span class="stage-age">16</span><span class="stage-label">First salary</span><span class="stage-signal">First-job preparation selected</span></button>
       <button class="stage-button" data-stage="26" type="button"><span class="stage-age">26</span><span class="stage-label">A home</span><span class="stage-signal">Salary, rent and savings milestone</span></button>
       <button class="stage-button" data-stage="55" type="button"><span class="stage-age">55</span><span class="stage-label">Retirement</span><span class="stage-signal">Retirement exploration activated</span></button>
@@ -263,10 +268,10 @@
 
     <div class="preview-banner" id="previewBanner" role="status"></div>
     <div class="workspace">
-      <section class="panel main-panel" aria-label="Future Me conversation">
-        <div class="appbar"><div class="app-brand"><span class="mini-mark">KBC</span> Future Me</div><span class="app-status">Customer view · demo</span></div>
+      <section class="panel main-panel" aria-label="Nubis conversation">
+        <div class="appbar"><div class="app-brand"><span class="mini-mark">KBC</span> Nubis</div><span class="app-status">Customer view · demo</span></div>
         <div class="app-content">
-          <div class="signal"><span class="signal-icon" id="signalIcon">💸</span><div><strong id="signalTitle">Why this moment?</strong><span id="signalText">You selected first-job preparation. Future Me is asking what your first salary should make possible.</span></div></div>
+          <div class="signal"><span class="signal-icon" id="signalIcon">💸</span><div><strong id="signalTitle">Why this moment?</strong><span id="signalText">You selected first-job preparation. Nubis is asking what your first salary should make possible.</span></div></div>
           <section class="banking-home" aria-labelledby="bankingHomeTitle">
             <div class="banking-home-head"><div><h2 id="bankingHomeTitle">Your money, right now</h2><p id="bankingHomeText">A simple place to see your everyday money.</p></div><span class="memory-tag" id="uiStageTag">Growing with you</span></div>
             <div class="balance-grid" id="balanceGrid"></div>
@@ -290,9 +295,9 @@
             <p class="wealth-note"><strong>Illustrative history only.</strong> It helps you see how your investments have grown over time; it is not a forecast, recommendation, or guarantee of future returns.</p>
           </section>
           <section class="scene first-salary" id="scene" aria-labelledby="sceneTitle">
-            <div class="scene-copy"><div class="scene-kicker" id="sceneKicker">Future Me · age 26</div><h2 id="sceneTitle">A first salary is getting closer.</h2><p id="sceneText">Meet the version of you who has had time to learn from the choices you make now.</p><span class="scene-place" id="scenePlace">A new beginning</span></div>
-            <div class="avatar-wrap" aria-label="Your future self avatar"><div class="avatar-halo"></div>
-              <svg class="avatar" viewBox="0 0 200 200" role="img" aria-label="A cartoon version of your future self">
+            <div class="scene-copy"><div class="scene-kicker" id="sceneKicker">Nubis · age 26</div><h2 id="sceneTitle">A first salary is getting closer.</h2><p id="sceneText">Meet the version of you who has had time to learn from the choices you make now.</p><span class="scene-place" id="scenePlace">A new beginning</span></div>
+            <div class="avatar-wrap" aria-label="Nubis avatar"><div class="avatar-halo"></div>
+              <svg class="avatar" viewBox="0 0 200 200" role="img" aria-label="A cartoon version of Nubis">
                 <ellipse cx="100" cy="174" rx="52" ry="9" fill="#071b4d" opacity=".16"/>
                 <path d="M51 100c0-34 21-56 49-56s49 22 49 56v33c0 24-21 37-49 37s-49-13-49-37z" class="avatar-body"/>
                 <path d="M68 127c8-8 56-8 64 0v17c0 10-13 17-32 17s-32-7-32-17z" fill="#ffffff55"/>
@@ -312,12 +317,9 @@
           </section>
 
           <section class="conversation" aria-live="polite">
-            <div class="conversation-head"><div><div class="conversation-title-row"><h3 id="conversationTitle">Talk with Future me</h3><span class="chat-microphone" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="5.25" y="1.5" width="5.5" height="8" rx="2.75" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 8.2a4.5 4.5 0 0 0 9 0M8 12.7V15M5.7 15h4.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div><p id="conversationSubtitle">A simple, private demo chat. Use a suggested reply or type naturally.</p></div><span class="memory-tag" id="memoryTag">Nothing saved yet</span></div>
+            <div class="conversation-head"><div><div class="conversation-title-row"><h3 id="conversationTitle">Talk with Nubis</h3><button class="conversation-player" id="conversationPlayerButton" type="button" aria-label="Play the Nubis conversation"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.25" y="1.5" width="5.5" height="8" rx="2.75" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 8.2a4.5 4.5 0 0 0 9 0M8 12.7V15M5.7 15h4.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div><p id="conversationSubtitle">Tap the microphone to play this life moment.</p></div><span class="memory-tag" id="memoryTag">Ready to play</span></div>
             <div class="chat-log" id="chatLog"></div>
-            <p class="chat-prompt" id="question">What matters most right now?</p>
-            <div class="answers" id="answers"></div>
-            <form class="chat-composer" id="chatComposer"><input id="chatInput" type="text" autocomplete="off" placeholder="Type a reply, for example “I want to travel”" aria-label="Reply to Future Me"><button class="send" type="submit">Send</button></form>
-            <p class="chat-hint" id="helper">This local demo recognises simple keywords. Suggested replies always work.</p>
+            <div class="legacy-chat-controls" aria-hidden="true"><p class="chat-prompt" id="question">What matters most right now?</p><div class="answers" id="answers"></div><form class="chat-composer" id="chatComposer"><input id="chatInput" type="text" autocomplete="off" aria-label="Reply to Nubis"><button class="send" type="submit">Send</button></form><p class="chat-hint" id="helper"></p></div>
           </section>
           <section class="card hidden" id="conversationCard" aria-live="polite"></section>
         </div>
@@ -336,9 +338,9 @@
           <div class="history-list" id="historyList"></div>
         </section>
         <section class="panel side-card">
-          <h2>How Future Me works</h2>
+          <h2>How Nubis works</h2>
           <p>One small set of inputs powers every stage of this proof of concept.</p>
-          <div class="boundary"><strong>Life stage</strong> · <strong>active signal</strong> · <strong>remembered value</strong> · <strong>current answer</strong><br><br>Future Me helps you reflect and prepare. It does not approve credit, recommend a product, move money, or contact anyone without confirmation.</div>
+          <div class="boundary"><strong>Life stage</strong> · <strong>active signal</strong> · <strong>remembered value</strong> · <strong>current answer</strong><br><br>Nubis helps you reflect and prepare. It does not approve credit, recommend a product, move money, or contact anyone without confirmation.</div>
         </section>
       </aside>
     </div>
@@ -355,8 +357,8 @@
       const stageData = {
         16: {
           futureAge: 26, className: "first-salary", color: "#79d8c5", icon: "💸",
-          signal: "You selected first-job preparation. Future Me is asking what your first salary should make possible.",
-          kicker: "Future Me · age 26", title: "A first salary is getting closer.", text: "Meet the version of you who has had time to learn from the choices you make now.", place: "A new beginning",
+          signal: "You selected first-job preparation. Nubis is asking what your first salary should make possible.",
+          kicker: "Nubis · age 26", title: "A first salary is getting closer.", text: "Meet the version of you who has had time to learn from the choices you make now.", place: "A new beginning",
           message: "“Your first salary is getting closer. What would you like it to make possible?”", question: "What matters most right now?",
           answers: [["independence", "More independence"], ["experience", "Travel the world"], ["security", "A sense of security"]],
           followUp: "And what would be a good first step?", followAnswers: [["plan", "Make a simple plan"], ["learn", "Learn as I go"], ["small", "Start with something small"]],
@@ -371,7 +373,7 @@
         26: {
           futureAge: 36, className: "home", color: "#a995ef", icon: "🔑",
           signal: "Fictional signal: a stable salary, rent payments and a savings milestone suggest a home-related moment.",
-          kicker: "Future Me · age 36", title: "Does a home still fit the life you want?", text: "Your future self remembers the value you chose before. Now a new possibility is taking shape.", place: "A place to belong",
+          kicker: "Nubis · age 36", title: "Does a home still fit the life you want?", text: "Nubis remembers the value you chose before. Now a new possibility is taking shape.", place: "A place to belong",
           message: "“At 16, you told me you wanted to <em>{value}</em>. Is that still a goal? I can help you understand how to save while you explore what home could mean.”", question: "How does this possibility feel?",
           answers: [["buy", "I want to explore buying"], ["flexibility", "Flexibility matters more"], ["changed", "My priorities changed"]],
           followUp: "What would help you take the next step?", followAnswers: [["timing", "Understand the timing"], ["costs", "See the full costs"], ["person", "Talk to an expert"]],
@@ -386,7 +388,7 @@
         55: {
           futureAge: 67, className: "retirement", color: "#f1aa71", icon: "🌅",
           signal: "Retirement exploration activated. This is a fictional demo trigger, not a prediction about your life.",
-          kicker: "Future Me · age 67", title: "What should life after work feel like?", text: "Meet your future self in a setting you choose. Independence can keep changing shape.", place: "A life with room to choose",
+          kicker: "Nubis · age 67", title: "What should life after work feel like?", text: "Meet Nubis in a setting you choose. Independence can keep changing shape.", place: "A life with room to choose",
           message: "“Independence has meant different things to us. What should it mean after full-time work?”", question: "Which future feels most like you?",
           answers: [["travel", "Travel and discover"], ["family", "Time with family"], ["home", "Enjoy home life"]],
           followUp: "What would make this feel more possible?", followAnswers: [["timing", "Know when I can start"], ["questions", "Prepare my questions"], ["options", "Understand my options"]],
@@ -404,6 +406,32 @@
         question: "What would you like to do?",
         answers: [["learn", "Learn more"], ["person", "Talk to a person"], ["later", "Come back later"]]
       };
+      const conversationScripts = {
+        16: [
+          ["Theo", "Nubis, I feel like going for drinks tonight. Is that okay for my ski trip?"],
+          ["Nubis", "Of course. You are still aiming for €650 by February, and a night out does not cancel that."],
+          ["Nubis", "If you spend around €30 tonight, we can get back on track by putting €6 less toward food for the next five days. Or we can set a €15 budget tonight and leave the ski plan exactly as it is."],
+          ["Theo", "Let’s do the €30. I can skip take-away food this week."],
+          ["Nubis", "Done. Tonight is covered, and your ski goal stays alive. I’ll check in next week—not every day."]
+        ],
+        26: [
+          ["Theo", "Hey Nubis, I love this apartment. Do you think I should make an offer?"],
+          ["Nubis", "I remember that having your own place has mattered to you since you were 16. And when you got your first salary, you said you never wanted a home to take away all your freedom."],
+          ["Nubis", "I cannot tell you whether to buy it. But before you decide, I can help you answer the questions that usually matter: what would a comfortable monthly home cost feel like, how much buffer would let you sleep well, and what costs come with the property beyond the price?"],
+          ["Theo", "I have not really thought about the costs beyond the price."],
+          ["Nubis", "That is completely normal. Let’s make a simple home checklist together, then you can take it to a KBC home expert when you are ready."]
+        ],
+        55: [
+          ["Theo", "I want to retire at 67, still enjoy my life, and leave something meaningful for the kids. Is there room for both?"],
+          ["Nubis", "There can be. Let's do it the way we've always made big decisions: make sure future us is okay first, then see what we can pass on."],
+          ["Theo", "Where do we start?"],
+          ["Nubis", "Picture three things. A suitcase for the trips we still want to take. A house key for feeling safe at home. And a gift for the people we love. The first two come first. The gift grows from whatever's left above that."],
+          ["Theo", "I want the suitcase and the key to stay, but I'd love the gift to grow over time."],
+          ["Nubis", "Then that's our plan: protect the trips and the security, and let the gift grow slowly on top. No big promises today, just a future with room for all three."],
+          ["Theo", "I like that. It feels like planning for life, not just retirement."],
+          ["Nubis", "Exactly. When you're ready, let's take this to a KBC investment advisor and turn it into a plan with the real numbers."]
+        ]
+      };
       const lifeHistory = [
         { stage: 16, age: "12", icon: "🌱", title: "First account opened", detail: "A simple place for pocket money and small saving goals." },
         { stage: 16, age: "15", icon: "✈️", title: "Travel the world became a goal", detail: "Saved as a fictional demo memory, ready for a later check-in." },
@@ -416,6 +444,11 @@
       const initialState = () => ({ currentStage: 16, step: 0, selected: null, completed: [], memories: [], cards: {}, preview: false, pendingText: "" });
       let state = loadState();
       let toastTimer;
+      let conversationTimer;
+      let conversationStage = null;
+      let conversationIndex = 0;
+      let visibleConversationLines = [];
+      let conversationPlaying = false;
 
       function loadState() {
         try {
@@ -451,13 +484,47 @@
         }));
       }
       function renderChat() {
-        const stage = current();
-        const initialMessage = interpolate(stage.message);
-        const followUp = `“${escapeHtml(stage.followUp)}”`;
-        const customerReply = escapeHtml(state.pendingText || answerLabel(state.pendingValue || ""));
-        let html = `<div class="chat-bubble"><span class="chat-label">Future Me</span>${initialMessage}</div>`;
-        if (state.step === 1) html += `<div class="chat-bubble customer"><span class="chat-label">You</span>${customerReply}</div><div class="chat-bubble"><span class="chat-label">Future Me</span>${followUp}</div>`;
-        $("chatLog").innerHTML = html;
+        if (conversationStage !== state.currentStage || !visibleConversationLines.length) {
+          $("chatLog").innerHTML = '<div class="script-placeholder">Tap the microphone to play Theo and Nubis talking through this moment.</div>';
+          return;
+        }
+        $("chatLog").innerHTML = visibleConversationLines.map(([speaker, message]) => `<div class="chat-bubble${speaker === "Theo" ? " customer" : ""}"><span class="chat-label">${speaker}</span>${escapeHtml(message)}</div>`).join("");
+        $("chatLog").scrollTop = $("chatLog").scrollHeight;
+      }
+      function updateConversationPlayer() {
+        const button = $("conversationPlayerButton");
+        button.classList.toggle("playing", conversationPlaying);
+        button.setAttribute("aria-label", conversationPlaying ? "Playing the Nubis conversation" : "Play the Nubis conversation");
+        $("memoryTag").textContent = conversationPlaying ? "Playing conversation" : visibleConversationLines.length ? "Replay conversation" : "Ready to play";
+      }
+      function stopConversation() {
+        clearTimeout(conversationTimer);
+        conversationTimer = null;
+        conversationPlaying = false;
+      }
+      function playConversation() {
+        stopConversation();
+        conversationStage = state.currentStage;
+        conversationIndex = 0;
+        visibleConversationLines = [];
+        conversationPlaying = true;
+        updateConversationPlayer();
+        renderChat();
+        playNextConversationLine();
+      }
+      function playNextConversationLine() {
+        const script = conversationScripts[conversationStage] || [];
+        if (conversationIndex >= script.length) {
+          conversationPlaying = false;
+          updateConversationPlayer();
+          return;
+        }
+        const line = script[conversationIndex];
+        visibleConversationLines.push(line);
+        conversationIndex += 1;
+        renderChat();
+        const pause = Math.min(4300, Math.max(1450, line[1].length * 19));
+        conversationTimer = setTimeout(playNextConversationLine, pause);
       }
       function openToolPanel(tool) {
         const panels = {
@@ -513,7 +580,7 @@
         $("lifePrompt").textContent = dashboard.prompt;
         $("wealthCard").classList.toggle("visible", state.currentStage === 55);
         $("moneyTools").querySelectorAll(".money-tool").forEach((button) => button.addEventListener("click", () => openToolPanel(button.dataset.tool)));
-        $("lifePrompt").onclick = () => openDialog("A meaningful next step", state.currentStage === 26 ? "At 16, this fictional customer saved a wish to travel the world. Future Me can check in on that goal while helping them understand how a home might fit their priorities." : "This prompt connects a life moment with an optional next step. The customer stays in control of whether to explore it.", "✦", false);
+        $("lifePrompt").onclick = () => openDialog("A meaningful next step", state.currentStage === 26 ? "At 16, this fictional customer saved a wish to travel the world. Nubis can check in on that goal while helping them understand how a home might fit their priorities." : "This prompt connects a life moment with an optional next step. The customer stays in control of whether to explore it.", "✦", false);
       }
       function setScene() {
         const stage = current();
@@ -524,21 +591,19 @@
         $("sceneTitle").textContent = stage.title;
         $("sceneText").textContent = stage.text;
         $("scenePlace").textContent = stage.place;
-        $("avatarAge").textContent = `Your future self · ${stage.futureAge}`;
+        $("avatarAge").textContent = `Nubis · age ${stage.futureAge}`;
         document.documentElement.style.setProperty("--avatar-color", stage.color);
         $("backpack").classList.toggle("visible", state.currentStage === 16);
         $("scarf").classList.toggle("visible", state.currentStage === 26);
         $("glasses").classList.toggle("visible", state.currentStage === 55);
         $("flower").classList.toggle("visible", state.currentStage === 55);
         $("question").textContent = state.step === 0 ? stage.question : stage.followUp;
-        $("memoryTag").textContent = state.step === 0 ? (state.memories.length ? `${state.memories.length} memor${state.memories.length === 1 ? "y" : "ies"} carried forward` : "Nothing saved yet") : "One more reflection";
-        $("conversationTitle").textContent = "Talk with Future me";
-        $("conversationSubtitle").textContent = state.step === 0 ? "Use a suggested reply or type naturally. Future Me keeps the story focused." : "One more answer turns this conversation into a customer-approved memory.";
-        $("helper").textContent = state.step === 0 ? "This local demo recognises terms such as travel, independence, security and saving. Suggested replies always work." : "Reply naturally, or choose a suggested answer. Only the interpreted, customer-approved intent is saved.";
-        $("chatInput").placeholder = state.step === 0 ? "Try “I want to travel”" : "Type a reply, or use a suggestion";
+        $("conversationTitle").textContent = "Talk with Nubis";
+        $("conversationSubtitle").textContent = "Tap the microphone to play this life moment.";
         renderChat();
         renderAnswers();
         renderDashboard();
+        updateConversationPlayer();
       }
       function renderTimeline() {
         document.querySelectorAll(".stage-button").forEach((button) => {
@@ -579,7 +644,7 @@
             : [["Your value", answerLabel(card.value)], ["First step", answerLabel(card.followUp)], ["Carried forward", "To your next chapter"]];
         container.classList.remove("hidden");
         const title = isHousing || isRetirement ? "A useful handoff, on your terms." : "Your first branch is growing.";
-        const summary = isHousing ? "You are exploring whether a home fits your life. This summary keeps your priorities and questions together without deciding for you." : isRetirement ? "You have started a reflection about life after full-time work. This summary prepares a conversation without presenting a product recommendation." : "You chose what you want your first salary to make possible. This memory can shape the questions Future Me asks later.";
+        const summary = isHousing ? "You are exploring whether a home fits your life. This summary keeps your priorities and questions together without deciding for you." : isRetirement ? "You have started a reflection about life after full-time work. This summary prepares a conversation without presenting a product recommendation." : "You chose what you want your first salary to make possible. This memory can shape the questions Nubis asks later.";
         const actions = isHousing || isRetirement ? '<button class="primary" id="learnButton" type="button">Learn more</button><button class="secondary" id="handoffButton" type="button">Prepare a KBC handoff</button>' : '<button class="primary" id="nextStageButton" type="button">Continue to age 26</button>';
         container.innerHTML = `<div class="card-label">${isHousing ? "Housing Conversation Card" : isRetirement ? "Retirement Conversation Card" : "Life Tree memory"}</div><h3>${title}</h3><p class="card-summary">${summary}</p><div class="card-grid">${facts.map(([label, value]) => `<div class="card-fact"><small>${label}</small><strong>${escapeHtml(value)}</strong></div>`).join("")}</div><div class="card-actions">${actions}</div>`;
         if (isHousing || isRetirement) {
@@ -598,6 +663,9 @@
         saveState();
       }
       function startStage(stage, guided = false) {
+        stopConversation();
+        conversationStage = null;
+        visibleConversationLines = [];
         state.currentStage = stage;
         state.step = 0;
         state.selected = null;
@@ -705,6 +773,7 @@
         event.preventDefault();
         submitReply($("chatInput").value);
       });
+      $("conversationPlayerButton").addEventListener("click", playConversation);
       $("dialogClose").addEventListener("click", () => $("dialog").close());
       $("dialog").addEventListener("click", (event) => { if (event.target === $("dialog")) $("dialog").close(); });
       $("dialogConfirm").addEventListener("click", () => {
@@ -718,6 +787,9 @@
         }
       });
       $("resetButton").addEventListener("click", () => openDialog("Reset this demo?", "This clears the fictional memories and returns to the first-salary conversation. No account or KBC data is affected.", "↺", true, () => {
+        stopConversation();
+        conversationStage = null;
+        visibleConversationLines = [];
         state = initialState();
         localStorage.removeItem(STORAGE_KEY);
         $("previewBanner").classList.remove("visible");
