@@ -215,6 +215,65 @@
     .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .concept { min-width: 0; padding: 8px; border-radius: 9px; color: #506880; background: #fff; font-size: 9px; line-height: 1.35; }
     .concept b { display: block; margin-bottom: 3px; color: #314f75; font-size: 9px; }
+    @media (min-width: 1024px) {
+      .shell { width: min(1480px, calc(100% - 56px)); padding-top: 30px; }
+      .topbar { margin-bottom: 28px; }
+      .brand { font-size: 22px; }
+      .brand-mark { width: 46px; height: 46px; }
+      .brand-mark svg { width: 27px; height: 27px; }
+      .brand-sub { font-size: 11px; }
+      .reset-button { padding: 10px 13px; font-size: 12px; }
+      .eyebrow { font-size: 12px; }
+      h1 { max-width: 760px; font-size: clamp(38px, 3.4vw, 56px); }
+      .hero p { max-width: 780px; font-size: 16px; }
+      .demo-note { padding: 8px 12px; font-size: 11px; }
+      .stage-button { padding: 15px; }
+      .stage-age { font-size: 23px; }
+      .stage-label { font-size: 12px; }
+      .stage-signal { font-size: 10px; }
+      .workspace { grid-template-columns: minmax(0, 1.35fr) minmax(390px, .95fr); gap: 22px; }
+      .appbar { padding: 17px 22px; }
+      .app-brand { font-size: 15px; }
+      .mini-mark { width: 29px; height: 29px; font-size: 9px; }
+      .app-status { font-size: 11px; }
+      .app-content { padding: 32px; }
+      .signal { padding: 12px 14px; font-size: 11px; }
+      .signal strong { font-size: 11px; }
+      .signal-icon { font-size: 17px; }
+      .banking-home { padding: 18px; }
+      .banking-home h2, .conversation-head h3 { font-size: 16px; }
+      .banking-home p, .conversation-head p { font-size: 11px; }
+      .balance { padding: 13px; }
+      .balance small, .money-tool span { font-size: 10px; }
+      .balance strong, .wealth-value { font-size: 22px; }
+      .money-tool, .life-prompt { padding: 11px; font-size: 11px; }
+      .scene { min-height: 315px; padding: 25px; }
+      .scene-kicker { font-size: 11px; }
+      .scene h2 { font-size: 34px; }
+      .scene p { font-size: 13px; }
+      .scene-place { font-size: 10px; }
+      .avatar-wrap { width: min(40%, 250px); }
+      .avatar { width: min(100%, 208px); }
+      .conversation { padding: 20px; }
+      .conversation-player { width: 39px; height: 39px; }
+      .conversation-player svg { width: 19px; height: 19px; }
+      .memory-tag { font-size: 10px; }
+      .chat-log { gap: 10px; max-height: 330px; }
+      .chat-bubble { padding: 12px 14px; font-size: 14px; }
+      .chat-label { font-size: 9px; }
+      .script-placeholder { padding: 13px 14px; font-size: 12px; }
+      .life-tree-card { padding: 26px; }
+      .life-tree-card h2 { font-size: 18px; }
+      .side-card > p { font-size: 11px; }
+      .memory b, .history-event b { font-size: 11px; }
+      .memory span, .history-event span { font-size: 10px; }
+      .history-title { font-size: 10px; }
+      .tree-status, .boundary { font-size: 10px; }
+      .wealth-head { padding: 18px 18px 0; }
+      .wealth-kicker { font-size: 10px; }
+      .wealth-head h3 { font-size: 17px; }
+      .wealth-note { padding: 8px 18px 16px; font-size: 10px; }
+    }
     @media (max-width: 760px) {
       .workspace { grid-template-columns: 1fr; }
       .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
