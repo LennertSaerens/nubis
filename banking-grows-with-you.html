@@ -191,6 +191,22 @@
     .dialog-content h2 { margin: 0 0 7px; font-size: 19px; letter-spacing: -.04em; }
     .dialog-content p { margin: 0 0 17px; color: #68788f; font-size: 11px; line-height: 1.65; white-space: pre-line; }
     .dialog-actions { display: flex; justify-content: end; gap: 7px; }
+    .tool-panel { margin: -5px 0 16px; padding: 12px; border: 1px solid #e2e9f2; border-radius: 13px; background: #f8faff; }
+    .tool-panel-title { margin: 0 0 9px; color: #3b5677; font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .spend-list, .bill-list, .check-list { display: grid; gap: 8px; }
+    .spend-row, .bill-row { display: grid; grid-template-columns: minmax(72px, 1fr) auto; gap: 8px; align-items: center; color: #516983; font-size: 10px; font-weight: 750; }
+    .spend-row span:last-child, .bill-row span:last-child { color: #2e4d73; }
+    .mini-bar { grid-column: 1 / -1; overflow: hidden; height: 5px; border-radius: 9px; background: #e1eaf5; }
+    .mini-bar i { display: block; height: 100%; border-radius: inherit; background: #5d96ee; }
+    .tool-form { display: grid; gap: 8px; }
+    .tool-form label { display: grid; gap: 4px; color: #667b95; font-size: 9px; font-weight: 800; }
+    .tool-form input { width: 100%; border: 1px solid #dce5f0; border-radius: 8px; padding: 8px 9px; color: var(--ink); background: #fff; font: inherit; font-size: 11px; }
+    .tool-form input:focus { border-color: #7da5ff; outline: 0; box-shadow: 0 0 0 3px #0754f214; }
+    .check-item { display: flex; align-items: center; gap: 7px; color: #536b84; font-size: 10px; line-height: 1.35; }
+    .check-item i { display: grid; place-items: center; flex: 0 0 17px; width: 17px; height: 17px; border-radius: 50%; color: #267455; background: #ddf5e9; font-size: 10px; font-style: normal; }
+    .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .concept { min-width: 0; padding: 8px; border-radius: 9px; color: #506880; background: #fff; font-size: 9px; line-height: 1.35; }
+    .concept b { display: block; margin-bottom: 3px; color: #314f75; font-size: 9px; }
     @media (max-width: 760px) {
       .workspace { grid-template-columns: 1fr; }
       .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -328,7 +344,7 @@
     </div>
   </main>
 
-  <dialog id="dialog" aria-labelledby="dialogTitle"><div class="dialog-content"><div class="dialog-icon" id="dialogIcon">✦</div><h2 id="dialogTitle">Next step</h2><p id="dialogText"></p><div class="dialog-actions"><button class="secondary" id="dialogClose" type="button">Close</button><button class="primary" id="dialogConfirm" type="button">Confirm</button></div></div></dialog>
+  <dialog id="dialog" aria-labelledby="dialogTitle"><div class="dialog-content"><div class="dialog-icon" id="dialogIcon">✦</div><h2 id="dialogTitle">Next step</h2><p id="dialogText"></p><div id="dialogDetail"></div><div class="dialog-actions"><button class="secondary" id="dialogClose" type="button">Close</button><button class="primary" id="dialogConfirm" type="button">Confirm</button></div></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
@@ -443,6 +459,51 @@
         if (state.step === 1) html += `<div class="chat-bubble customer"><span class="chat-label">You</span>${customerReply}</div><div class="chat-bubble"><span class="chat-label">Future Me</span>${followUp}</div>`;
         $("chatLog").innerHTML = html;
       }
+      function openToolPanel(tool) {
+        const panels = {
+          "See this week's spending": {
+            icon: "📊", title: "This week's spending", text: "A simple view of fictional spending, so you can notice your habits without judgement.",
+            detail: '<div class="tool-panel"><p class="tool-panel-title">€42.80 this week</p><div class="spend-list"><div class="spend-row"><span>Food</span><span>€18.40</span><div class="mini-bar"><i style="width:43%"></i></div></div><div class="spend-row"><span>Travel</span><span>€14.20</span><div class="mini-bar"><i style="width:33%"></i></div></div><div class="spend-row"><span>Fun</span><span>€10.20</span><div class="mini-bar"><i style="width:24%"></i></div></div></div></div>',
+            confirm: "Done"
+          },
+          "Send money to a friend": {
+            icon: "↗", title: "Send money", text: "Try a fictional transfer. Nothing is sent in this proof of concept.",
+            detail: '<div class="tool-panel"><p class="tool-panel-title">Transfer details</p><div class="tool-form"><label>Friend<input id="transferFriend" type="text" value="Sam" maxlength="40"></label><label>Amount<input id="transferAmount" type="number" min="1" max="58" value="10" inputmode="decimal"></label></div></div>',
+            confirm: "Review transfer", action: () => {
+              const friend = $("transferFriend").value.trim() || "your friend";
+              const amount = Number($("transferAmount").value) || 0;
+              $("dialog").close();
+              showToast(`Fictional transfer review: €${amount.toFixed(2)} to ${friend}. Nothing was sent.`);
+            }
+          },
+          "Budget and bills": {
+            icon: "🧾", title: "Budget and bills", text: "A fictional monthly overview keeps regular costs visible alongside your plans.",
+            detail: '<div class="tool-panel"><p class="tool-panel-title">This month</p><div class="bill-list"><div class="bill-row"><span>Rent</span><span>€920</span></div><div class="bill-row"><span>Utilities</span><span>€135</span></div><div class="bill-row"><span>Everyday spending</span><span>€610</span></div><div class="bill-row"><span>Travel goal</span><span>€80</span></div></div></div>',
+            confirm: "Done"
+          },
+          "Explore home readiness": {
+            icon: "🔑", title: "Home readiness", text: "A starting checklist can help you prepare questions before making a housing decision.",
+            detail: '<div class="tool-panel"><p class="tool-panel-title">Questions to explore</p><div class="check-list"><div class="check-item"><i>✓</i><span>Understand your monthly income and regular costs</span></div><div class="check-item"><i>✓</i><span>List the full costs around a home, not only a loan</span></div><div class="check-item"><i>→</i><span>Bring timing and flexibility questions to a KBC professional</span></div></div></div>',
+            confirm: "Save checklist"
+          },
+          "Pension overview": {
+            icon: "☀️", title: "Pension overview", text: "A fictional overview to help you prepare for a retirement conversation.",
+            detail: '<div class="tool-panel"><p class="tool-panel-title">Your retirement picture</p><div class="check-list"><div class="check-item"><i>✓</i><span>Current lifestyle priorities captured</span></div><div class="check-item"><i>✓</i><span>Investment journey visible in your wealth overview</span></div><div class="check-item"><i>→</i><span>Next: prepare questions about timing and options</span></div></div></div>',
+            confirm: "Prepare questions"
+          },
+          "How pension funds work": {
+            icon: "📘", title: "How pension funds work", text: "A plain-language explainer, not a recommendation for any fund or product.",
+            detail: '<div class="tool-panel"><p class="tool-panel-title">The general idea</p><div class="concept-grid"><div class="concept"><b>Contributions</b>Money can be added over time.</div><div class="concept"><b>Investing</b>Value can rise or fall.</div><div class="concept"><b>Time</b>Longer horizons may change the picture.</div></div></div>',
+            confirm: "Got it"
+          }
+        };
+        const panel = panels[tool];
+        if (!panel) return;
+        openDialog(panel.title, panel.text, panel.icon, true, panel.action || (() => {
+          $("dialog").close();
+          showToast(`${panel.confirm} in this fictional demo.`);
+        }), panel.detail, panel.confirm);
+      }
       function renderDashboard() {
         const dashboard = current().dashboard;
         $("bankingHomeText").textContent = dashboard.text;
@@ -451,7 +512,7 @@
         $("moneyTools").innerHTML = dashboard.tools.map(([title, detail]) => `<button class="money-tool" type="button" data-tool="${escapeHtml(title)}"><span>${detail}</span>${title}</button>`).join("");
         $("lifePrompt").textContent = dashboard.prompt;
         $("wealthCard").classList.toggle("visible", state.currentStage === 55);
-        $("moneyTools").querySelectorAll(".money-tool").forEach((button) => button.addEventListener("click", () => openDialog(button.dataset.tool, "This is an illustrative, age-appropriate surface in the Future Me concept. It would offer clear information and customer-controlled next steps, not an automated financial decision.", "✦", false)));
+        $("moneyTools").querySelectorAll(".money-tool").forEach((button) => button.addEventListener("click", () => openToolPanel(button.dataset.tool)));
         $("lifePrompt").onclick = () => openDialog("A meaningful next step", state.currentStage === 26 ? "At 16, this fictional customer saved a wish to travel the world. Future Me can check in on that goal while helping them understand how a home might fit their priorities." : "This prompt connects a life moment with an optional next step. The customer stays in control of whether to explore it.", "✦", false);
       }
       function setScene() {
@@ -470,7 +531,7 @@
         $("glasses").classList.toggle("visible", state.currentStage === 55);
         $("flower").classList.toggle("visible", state.currentStage === 55);
         $("question").textContent = state.step === 0 ? stage.question : stage.followUp;
-        $("memoryTag").textContent = state.step === 0 ? (state.memories.length ? `${state.memories.length} memory${state.memories.length > 1 ? "ies" : ""} carried forward` : "Nothing saved yet") : "One more reflection";
+        $("memoryTag").textContent = state.step === 0 ? (state.memories.length ? `${state.memories.length} memor${state.memories.length === 1 ? "y" : "ies"} carried forward` : "Nothing saved yet") : "One more reflection";
         $("conversationTitle").textContent = "Talk with Future me";
         $("conversationSubtitle").textContent = state.step === 0 ? "Use a suggested reply or type naturally. Future Me keeps the story focused." : "One more answer turns this conversation into a customer-approved memory.";
         $("helper").textContent = state.step === 0 ? "This local demo recognises terms such as travel, independence, security and saving. Suggested replies always work." : "Reply naturally, or choose a suggested answer. Only the interpreted, customer-approved intent is saved.";
@@ -617,12 +678,13 @@
         showToast(state.currentStage === 16 ? "Your first Life Tree branch is growing." : "Your memory is saved and ready for the next chapter.");
       }
       let dialogAction = null;
-      function openDialog(title, text, icon, confirmable, action = null) {
+      function openDialog(title, text, icon, confirmable, action = null, detail = "", confirmLabel = "Show confirmation") {
         $("dialogTitle").textContent = title;
         $("dialogText").textContent = text;
         $("dialogIcon").textContent = icon;
+        $("dialogDetail").innerHTML = detail;
         $("dialogConfirm").style.display = confirmable ? "inline-block" : "none";
-        $("dialogConfirm").textContent = "Show confirmation";
+        $("dialogConfirm").textContent = confirmLabel;
         dialogAction = action;
         $("dialog").showModal();
       }

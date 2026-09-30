@@ -15,6 +15,8 @@ Open `banking-grows-with-you.html` in a modern browser. No install, server, API 
 
 The stage buttons support a clearly labelled **guided preview** for jumping directly to a later scene. Preview memories are explicitly marked as fictional seeded context; the main story should be shown linearly.
 
+The adaptive banking tools also open lightweight fictional panels: a weekly-spend breakdown and transfer review at 16; budget and home-readiness views at 26; and pension overview/fund education at 55. They demonstrate the UI only—no money is moved, no product is recommended, and no appointment is booked.
+
 ## What is demonstrated
 
 - **Understand:** controlled fictional signals and the customer’s current answer.
