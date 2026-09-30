@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>KBC Future Me</title>
+  <style>
+    :root {
+      --ink: #10213b;
+      --muted: #667790;
+      --line: #e2e8f1;
+      --paper: #fff;
+      --canvas: #f5f7fb;
+      --blue: #0754f2;
+      --blue-dark: #092d84;
+      --blue-soft: #edf3ff;
+      --green: #147a52;
+      --green-soft: #e8faf1;
+      --amber: #a86400;
+      --amber-soft: #fff5df;
+      --shadow: 0 18px 50px rgba(31, 55, 91, .09);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; color: var(--ink); background: var(--canvas); }
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #8eb2ff; outline-offset: 2px; }
+    .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 22px 0 42px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 850; letter-spacing: -.045em; }
+    .brand-mark, .mini-mark { display: grid; place-items: center; color: #fff; background: var(--blue); }
+    .brand-mark { width: 40px; height: 40px; border-radius: 13px; box-shadow: 0 7px 16px #0754f22e; }
+    .brand-mark svg { width: 23px; height: 23px; }
+    .brand-sub { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-weight: 650; letter-spacing: .02em; }
+    .reset-button { border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; color: #49607b; background: #fff; font-size: 11px; font-weight: 800; }
+    .hero { margin-bottom: 18px; }
+    .eyebrow { color: var(--blue); font-size: 11px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { max-width: 650px; margin: 7px 0 8px; font-size: clamp(28px, 4vw, 42px); line-height: 1.05; letter-spacing: -.06em; }
+    .hero p { max-width: 680px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .demo-note { display: inline-flex; align-items: center; gap: 7px; margin-top: 13px; padding: 7px 10px; border-radius: 999px; color: #42607e; background: #eaf0f8; font-size: 10px; font-weight: 750; }
+    .demo-note::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3cbd81; box-shadow: 0 0 0 3px #3cbd8124; }
+    .journey { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+    .stage-button { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 16px; padding: 12px; color: #708198; text-align: left; background: #fff; transition: .16s ease; }
+    .stage-button:hover { border-color: #abc3fa; transform: translateY(-1px); }
+    .stage-button.active { border-color: #79a1ff; color: var(--blue-dark); background: var(--blue-soft); box-shadow: inset 0 0 0 1px #d8e4ff; }
+    .stage-button.done::after { content: "✓"; position: absolute; top: 10px; right: 11px; color: var(--green); font-size: 12px; font-weight: 900; }
+    .stage-age { display: block; margin-bottom: 3px; font-size: 19px; font-weight: 900; letter-spacing: -.04em; }
+    .stage-label { display: block; font-size: 10px; font-weight: 750; }
+    .stage-signal { display: block; margin-top: 6px; color: #8190a4; font-size: 9px; line-height: 1.35; }
+    .stage-button.active .stage-signal { color: #5270b3; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(270px, .75fr); gap: 16px; align-items: start; }
+    .panel { border: 1px solid #e8edf4; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow); }
+    .main-panel { overflow: hidden; }
+    .appbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid #edf0f5; background: #fff; }
+    .app-brand { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 850; letter-spacing: -.035em; }
+    .mini-mark { width: 25px; height: 25px; border-radius: 8px; font-size: 8px; font-weight: 900; }
+    .app-status { color: #718199; font-size: 10px; font-weight: 750; }
+    .app-content { padding: clamp(16px, 3vw, 28px); }
+    .signal { display: flex; align-items: start; gap: 9px; margin-bottom: 14px; padding: 10px 12px; border: 1px solid #dce8ff; border-radius: 13px; color: #45638e; background: #f5f8ff; font-size: 10px; line-height: 1.45; }
+    .signal strong { display: block; margin-bottom: 2px; color: #284f9e; font-size: 10px; }
+    .signal-icon { flex: 0 0 auto; font-size: 15px; }
+    .scene { position: relative; overflow: hidden; min-height: 265px; border-radius: 20px; padding: 20px; color: white; background: linear-gradient(125deg, #122a72, #1760cb); }
+    .scene::before, .scene::after { content: ""; position: absolute; border-radius: 50%; background: #ffffff12; }
+    .scene::before { width: 260px; height: 260px; top: -160px; right: -35px; }
+    .scene::after { width: 175px; height: 175px; bottom: -115px; left: 38%; }
+    .scene.first-salary { background: linear-gradient(125deg, #133473, #1687b7); }
+    .scene.home { background: linear-gradient(125deg, #2f276c, #7650b8); }
+    .scene.retirement { background: linear-gradient(125deg, #7a4b35, #ce7a49); }
+    .scene-copy { position: relative; z-index: 1; max-width: 62%; }
+    .scene-kicker { color: #c9dcff; font-size: 10px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .scene h2 { margin: 8px 0 7px; font-size: clamp(21px, 3vw, 29px); line-height: 1.1; letter-spacing: -.05em; }
+    .scene p { max-width: 400px; margin: 0; color: #e6eeff; font-size: 12px; line-height: 1.55; }
+    .scene-place { display: inline-flex; margin-top: 15px; padding: 6px 8px; border: 1px solid #ffffff3b; border-radius: 999px; color: #f5f8ff; background: #ffffff12; font-size: 9px; font-weight: 750; }
+    .avatar-wrap { position: absolute; z-index: 1; right: clamp(8px, 4vw, 38px); bottom: 4px; width: min(40%, 230px); text-align: center; }
+    .avatar-halo { position: absolute; width: 170px; height: 170px; right: 50%; bottom: 17px; border: 1px solid #ffffff26; border-radius: 50%; background: #ffffff12; transform: translateX(50%); }
+    .avatar { position: relative; width: min(100%, 190px); filter: drop-shadow(0 12px 12px #091d5730); animation: float 3.5s ease-in-out infinite; }
+    .avatar-body { fill: var(--avatar-color, #79d8c5); transition: fill .25s ease; }
+    .avatar-eye { fill: #24334c; }
+    .avatar-accessory { opacity: 0; transition: opacity .2s; }
+    .avatar-accessory.visible { opacity: 1; }
+    .age-badge { position: relative; z-index: 2; display: inline-block; margin-top: -4px; padding: 5px 8px; border-radius: 999px; color: #173873; background: #fff; font-size: 9px; font-weight: 850; }
+    @keyframes float { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-5px) rotate(1deg); } }
+    .banking-home { margin-bottom: 14px; padding: 15px; border: 1px solid #e6ebf3; border-radius: 18px; background: linear-gradient(130deg, #fff, #f8faff); }
+    .banking-home-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
+    .banking-home h2 { margin: 0 0 3px; font-size: 14px; letter-spacing: -.025em; }
+    .banking-home p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .balance-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .balance { padding: 11px; border-radius: 13px; color: #fff; background: linear-gradient(135deg, #10317d, #2168dc); }
+    .balance.secondary-balance { color: #2d4f81; background: #e9f1ff; }
+    .balance small { display: block; margin-bottom: 5px; color: #dce9ff; font-size: 9px; font-weight: 750; }
+    .secondary-balance small { color: #5d79a9; }
+    .balance strong { display: block; font-size: 18px; letter-spacing: -.04em; }
+    .money-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 9px; }
+    .money-tool, .life-prompt { border: 1px solid #e0e7f1; border-radius: 11px; padding: 9px; color: #3e5875; text-align: left; background: #fff; font-size: 10px; font-weight: 800; line-height: 1.35; }
+    .money-tool:hover, .life-prompt:hover { border-color: #7da5ff; color: var(--blue-dark); background: #f7f9ff; }
+    .money-tool span { display: block; margin-bottom: 3px; color: #8290a4; font-size: 9px; font-weight: 650; }
+    .life-prompt { width: 100%; margin-top: 9px; border-color: #d9e5ff; color: #31528b; background: #f4f8ff; }
+    .conversation { margin-top: 14px; padding: 17px; border: 1px solid #e6ebf3; border-radius: 18px; background: #fff; }
+    .conversation-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .conversation-head h3 { margin: 0 0 4px; font-size: 14px; letter-spacing: -.02em; }
+    .conversation-head p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .memory-tag { flex: 0 0 auto; padding: 6px 8px; border-radius: 8px; color: var(--green); background: var(--green-soft); font-size: 9px; font-weight: 800; }
+    .chat-log { display: grid; gap: 8px; max-height: 270px; overflow-y: auto; padding: 2px 2px 7px; }
+    .chat-bubble { max-width: 88%; padding: 10px 12px; border-radius: 14px 14px 14px 4px; color: #314b6b; background: #f1f5fb; font-size: 12px; line-height: 1.5; }
+    .chat-bubble em { color: #173f9d; font-style: normal; font-weight: 800; }
+    .chat-bubble.customer { justify-self: end; border-radius: 14px 14px 4px 14px; color: #fff; background: var(--blue); }
+    .chat-label { display: block; margin-bottom: 4px; color: #6e86a7; font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .customer .chat-label { color: #dbe8ff; }
+    .chat-prompt { margin: 8px 0; color: #52647a; font-size: 10px; font-weight: 800; }
+    .answers { display: flex; flex-wrap: wrap; gap: 6px; }
+    .answer { border: 1px solid #dce4ef; border-radius: 999px; padding: 8px 10px; color: #3d5572; text-align: left; background: #fff; font-size: 10px; font-weight: 750; line-height: 1.3; transition: .15s; }
+    .answer:hover { border-color: #7da5ff; color: var(--blue-dark); background: #f7f9ff; }
+    .chat-composer { display: flex; gap: 7px; margin-top: 10px; }
+    .chat-composer input { min-width: 0; flex: 1; border: 1px solid #dce4ef; border-radius: 10px; padding: 10px; color: var(--ink); background: #fff; font: inherit; font-size: 11px; }
+    .chat-composer input:focus { border-color: #7da5ff; outline: 0; box-shadow: 0 0 0 3px #0754f214; }
+    .send { flex: 0 0 auto; border: 0; border-radius: 10px; padding: 10px 12px; color: #fff; background: var(--blue); font-size: 10px; font-weight: 850; }
+    .chat-hint { margin: 7px 0 0; color: #8290a4; font-size: 9px; line-height: 1.4; }
+    .helper { color: #8290a4; font-size: 9px; line-height: 1.4; }
+    .continue, .primary { border: 0; border-radius: 10px; padding: 10px 12px; color: #fff; background: var(--blue); font-size: 10px; font-weight: 850; }
+    .continue[disabled] { opacity: .45; cursor: not-allowed; }
+    .secondary { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color: #52657d; background: #fff; font-size: 10px; font-weight: 800; }
+    .card { margin-top: 14px; padding: 16px; border: 1px solid #d9e5ff; border-radius: 17px; background: linear-gradient(125deg, #fbfdff, #f1f6ff); }
+    .card.hidden { display: none; }
+    .card-label { color: var(--blue); font-size: 9px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    .card h3 { margin: 5px 0 7px; font-size: 16px; letter-spacing: -.035em; }
+    .card-summary { margin: 0 0 13px; color: #536881; font-size: 11px; line-height: 1.5; }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 13px; }
+    .card-fact { min-width: 0; padding: 9px; border-radius: 10px; background: #fff; }
+    .card-fact small { display: block; margin-bottom: 4px; color: #8290a4; font-size: 8px; font-weight: 750; }
+    .card-fact strong { display: block; overflow-wrap: anywhere; color: #29486d; font-size: 10px; line-height: 1.3; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+    .side { display: grid; gap: 14px; }
+    .side-card { padding: 17px; }
+    .side-card h2 { margin: 0 0 5px; font-size: 14px; letter-spacing: -.025em; }
+    .side-card > p { margin: 0 0 14px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .memory-list { display: grid; gap: 9px; }
+    .memory { display: grid; grid-template-columns: 27px 1fr; gap: 9px; align-items: start; }
+    .memory-icon { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 9px; color: #247a59; background: #e8faf1; font-size: 12px; }
+    .memory b { display: block; margin-bottom: 2px; color: #304b6c; font-size: 10px; }
+    .memory span { display: block; color: #7a8a9f; font-size: 9px; line-height: 1.35; }
+    .history-title { margin: 14px 0 8px; color: #50627c; font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .history-list { display: grid; gap: 8px; }
+    .history-event { position: relative; display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; }
+    .history-event::before { content: ""; position: absolute; top: 27px; left: 11px; width: 1px; height: calc(100% - 15px); background: #dfe8f3; }
+    .history-event:last-child::before { display: none; }
+    .history-age { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: #42689d; background: #eaf2ff; font-size: 8px; font-weight: 900; }
+    .history-event b { display: block; margin-bottom: 1px; color: #3b5472; font-size: 9px; }
+    .history-event span { display: block; color: #8090a4; font-size: 8px; line-height: 1.35; }
+    .tree-line { height: 1px; margin: 13px 0; background: var(--line); }
+    .tree-status { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; color: #76869a; font-size: 9px; font-weight: 750; }
+    .tree-status strong { color: var(--green); }
+    .tree-track { display: flex; align-items: center; gap: 0; }
+    .tree-node { position: relative; display: grid; place-items: center; width: 29px; height: 29px; border: 2px solid #e1e8f2; border-radius: 50%; color: #8593a6; background: #fff; font-size: 10px; }
+    .tree-node + .tree-node::before { content: ""; position: absolute; right: 27px; width: 35px; height: 2px; background: #e7edf5; }
+    .tree-node.done { border-color: #b7e9d2; color: var(--green); background: var(--green-soft); }
+    .tree-node.done + .tree-node::before { background: #b7e9d2; }
+    .tree-node.current { border-color: #6e9bff; color: #fff; background: var(--blue); box-shadow: 0 0 0 4px #e7efff; }
+    .tree-labels { display: flex; justify-content: space-between; gap: 5px; margin-top: 7px; color: #8795a8; font-size: 8px; font-weight: 750; text-align: center; }
+    .boundary { padding: 12px; border-radius: 12px; color: #667a91; background: #f7f9fc; font-size: 9px; line-height: 1.5; }
+    .boundary strong { color: #3e5875; }
+    .preview-banner { display: none; margin-bottom: 12px; padding: 10px 12px; border: 1px solid #f0d79b; border-radius: 12px; color: #805d1e; background: var(--amber-soft); font-size: 10px; line-height: 1.45; }
+    .preview-banner.visible { display: block; }
+    .toast { position: fixed; z-index: 5; right: 18px; bottom: 18px; max-width: 350px; padding: 12px 14px; border: 1px solid #cce8d8; border-radius: 13px; color: #255d42; background: #f3fff7; box-shadow: 0 10px 30px #163d2022; font-size: 11px; line-height: 1.45; opacity: 0; pointer-events: none; transform: translateY(8px); transition: .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    dialog { width: min(470px, calc(100% - 28px)); padding: 0; overflow: hidden; border: 1px solid #e4eaf2; border-radius: 20px; color: var(--ink); box-shadow: 0 24px 80px #14274435; }
+    dialog::backdrop { background: #0e1b31a6; backdrop-filter: blur(3px); }
+    .dialog-content { padding: 22px; }
+    .dialog-icon { display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 12px; border-radius: 13px; background: var(--blue-soft); font-size: 19px; }
+    .dialog-content h2 { margin: 0 0 7px; font-size: 19px; letter-spacing: -.04em; }
+    .dialog-content p { margin: 0 0 17px; color: #68788f; font-size: 11px; line-height: 1.65; white-space: pre-line; }
+    .dialog-actions { display: flex; justify-content: end; gap: 7px; }
+    @media (max-width: 760px) {
+      .workspace { grid-template-columns: 1fr; }
+      .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .boundary { grid-column: 1 / -1; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: min(100% - 20px, 480px); padding-top: 13px; }
+      .topbar { margin-bottom: 17px; }
+      .brand { font-size: 17px; }
+      .hero p { font-size: 13px; }
+      .journey { gap: 5px; }
+      .stage-button { padding: 10px 8px; }
+      .stage-age { font-size: 16px; }
+      .stage-label { font-size: 9px; }
+      .stage-signal { display: none; }
+      .scene { min-height: 285px; padding: 17px; }
+      .scene-copy { max-width: 72%; }
+      .avatar-wrap { right: 0; width: 43%; opacity: .9; }
+      .avatar-halo { width: 125px; height: 125px; bottom: 26px; }
+      .conversation { padding: 14px; }
+      .balance-grid { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr; }
+      .side { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20v-8m0 0c0-4-3-6-7-6 0 4 2 7 7 7m0-2c0-4 3-6 7-6 0 4-2 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 21h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div>KBC Future Me<span class="brand-sub">A proof of concept for banking that grows with you</span></div>
+      </div>
+      <button class="reset-button" id="resetButton" type="button">Reset demo</button>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Talk to the person your choices are creating</div>
+      <h1>Your future self remembers what matters.</h1>
+      <p>Future Me notices meaningful moments, asks a useful question, and helps you carry your priorities from a first salary to a first home and eventually retirement.</p>
+      <span class="demo-note">Synthetic customer · fictional signals · nothing is booked or shared</span>
+    </section>
+
+    <nav class="journey" aria-label="Future Me life stages">
+      <button class="stage-button active" data-stage="16" type="button"><span class="stage-age">16</span><span class="stage-label">First salary</span><span class="stage-signal">First-job preparation selected</span></button>
+      <button class="stage-button" data-stage="26" type="button"><span class="stage-age">26</span><span class="stage-label">A home</span><span class="stage-signal">Salary, rent and savings milestone</span></button>
+      <button class="stage-button" data-stage="55" type="button"><span class="stage-age">55</span><span class="stage-label">Retirement</span><span class="stage-signal">Retirement exploration activated</span></button>
+    </nav>
+
+    <div class="preview-banner" id="previewBanner" role="status"></div>
+    <div class="workspace">
+      <section class="panel main-panel" aria-label="Future Me conversation">
+        <div class="appbar"><div class="app-brand"><span class="mini-mark">KBC</span> Future Me</div><span class="app-status">Customer view · demo</span></div>
+        <div class="app-content">
+          <div class="signal"><span class="signal-icon" id="signalIcon">💸</span><div><strong id="signalTitle">Why this moment?</strong><span id="signalText">You selected first-job preparation. Future Me is asking what your first salary should make possible.</span></div></div>
+          <section class="banking-home" aria-labelledby="bankingHomeTitle">
+            <div class="banking-home-head"><div><h2 id="bankingHomeTitle">Your money, right now</h2><p id="bankingHomeText">A simple place to see your everyday money.</p></div><span class="memory-tag" id="uiStageTag">Growing with you</span></div>
+            <div class="balance-grid" id="balanceGrid"></div>
+            <div class="money-tools" id="moneyTools"></div>
+            <button class="life-prompt" id="lifePrompt" type="button"></button>
+          </section>
+          <section class="scene first-salary" id="scene" aria-labelledby="sceneTitle">
+            <div class="scene-copy"><div class="scene-kicker" id="sceneKicker">Future Me · age 26</div><h2 id="sceneTitle">A first salary is getting closer.</h2><p id="sceneText">Meet the version of you who has had time to learn from the choices you make now.</p><span class="scene-place" id="scenePlace">A new beginning</span></div>
+            <div class="avatar-wrap" aria-label="Your future self avatar"><div class="avatar-halo"></div>
+              <svg class="avatar" viewBox="0 0 200 200" role="img" aria-label="A cartoon version of your future self">
+                <ellipse cx="100" cy="174" rx="52" ry="9" fill="#071b4d" opacity=".16"/>
+                <path d="M51 100c0-34 21-56 49-56s49 22 49 56v33c0 24-21 37-49 37s-49-13-49-37z" class="avatar-body"/>
+                <path d="M68 127c8-8 56-8 64 0v17c0 10-13 17-32 17s-32-7-32-17z" fill="#ffffff55"/>
+                <ellipse cx="58" cy="106" rx="11" ry="16" class="avatar-body"/><ellipse cx="142" cy="106" rx="11" ry="16" class="avatar-body"/>
+                <ellipse cx="83" cy="99" rx="4.4" ry="6" class="avatar-eye"/><ellipse cx="117" cy="99" rx="4.4" ry="6" class="avatar-eye"/>
+                <circle cx="72" cy="112" r="5" fill="#ff9b9e" opacity=".78"/><circle cx="128" cy="112" r="5" fill="#ff9b9e" opacity=".78"/>
+                <path d="M91 115c4 5 14 5 18 0" fill="none" stroke="#24334c" stroke-width="3" stroke-linecap="round"/>
+                <path d="M97 45c-1-13-9-17-16-23 14-1 22 7 21 20 4-12 13-18 25-17-8 7-10 14-12 22" fill="#b5f18c" stroke="#2f855f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M101 48c-1-9-1-14 0-19" fill="none" stroke="#2f855f" stroke-width="2.5" stroke-linecap="round"/>
+                <g id="backpack" class="avatar-accessory"><path d="M50 112c-8 2-12 10-11 24 1 12 5 19 13 20l7-10-2-30z" fill="#f5a84a" stroke="#fff" stroke-width="2"/><path d="M42 134h14" stroke="#fff" stroke-width="2" opacity=".8"/></g>
+                <g id="scarf" class="avatar-accessory"><path d="M72 126c17 8 38 8 56 0l-4 10c-17 9-31 9-48 0z" fill="#ffd05c" stroke="#fff" stroke-width="2"/><path d="M113 134l7 20 11-5-4-20" fill="#ffd05c" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></g>
+                <g id="glasses" class="avatar-accessory" fill="none" stroke="#244a8f" stroke-width="3"><circle cx="83" cy="99" r="10"/><circle cx="117" cy="99" r="10"/><path d="M93 99h14"/></g>
+                <g id="flower" class="avatar-accessory"><circle cx="145" cy="63" r="5" fill="#ffcf62"/><circle cx="145" cy="54" r="5" fill="#ff9bb0"/><circle cx="153" cy="62" r="5" fill="#ff9bb0"/><circle cx="145" cy="70" r="5" fill="#ff9bb0"/><circle cx="137" cy="62" r="5" fill="#ff9bb0"/></g>
+              </svg>
+              <span class="age-badge" id="avatarAge">Your future self · 26</span>
+            </div>
+          </section>
+
+          <section class="conversation" aria-live="polite">
+            <div class="conversation-head"><div><h3 id="conversationTitle">Chat with Future Me</h3><p id="conversationSubtitle">A simple, private demo chat. Use a suggested reply or type naturally.</p></div><span class="memory-tag" id="memoryTag">Nothing saved yet</span></div>
+            <div class="chat-log" id="chatLog"></div>
+            <p class="chat-prompt" id="question">What matters most right now?</p>
+            <div class="answers" id="answers"></div>
+            <form class="chat-composer" id="chatComposer"><input id="chatInput" type="text" autocomplete="off" placeholder="Type a reply, for example “I want to travel”" aria-label="Reply to Future Me"><button class="send" type="submit">Send</button></form>
+            <p class="chat-hint" id="helper">This local demo recognises simple keywords. Suggested replies always work.</p>
+          </section>
+          <section class="card hidden" id="conversationCard" aria-live="polite"></section>
+        </div>
+      </section>
+
+      <aside class="side">
+        <section class="panel side-card" aria-labelledby="treeTitle">
+          <h2 id="treeTitle">Your Life Tree</h2>
+          <p>Small choices become a story you can carry forward.</p>
+          <div class="tree-status"><span id="treeStatus">0 of 3 moments complete</span><strong id="treeMemoryCount">No memories yet</strong></div>
+          <div class="tree-track" aria-label="Life Tree progress"><span class="tree-node current" data-tree="16">✦</span><span class="tree-node" data-tree="26">⌂</span><span class="tree-node" data-tree="55">☼</span></div>
+          <div class="tree-labels"><span>First salary</span><span>Home</span><span>Retirement</span></div>
+          <div class="tree-line"></div>
+          <div class="memory-list" id="memoryList"><div class="memory"><div class="memory-icon">✦</div><div><b>Your first branch is waiting</b><span>Complete the first conversation to save what matters.</span></div></div></div>
+          <div class="history-title">Fictional life story so far</div>
+          <div class="history-list" id="historyList"></div>
+        </section>
+        <section class="panel side-card">
+          <h2>How Future Me works</h2>
+          <p>One small set of inputs powers every stage of this proof of concept.</p>
+          <div class="boundary"><strong>Life stage</strong> · <strong>active signal</strong> · <strong>remembered value</strong> · <strong>current answer</strong><br><br>Future Me helps you reflect and prepare. It does not approve credit, recommend a product, move money, or contact anyone without confirmation.</div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="dialog" aria-labelledby="dialogTitle"><div class="dialog-content"><div class="dialog-icon" id="dialogIcon">✦</div><h2 id="dialogTitle">Next step</h2><p id="dialogText"></p><div class="dialog-actions"><button class="secondary" id="dialogClose" type="button">Close</button><button class="primary" id="dialogConfirm" type="button">Confirm</button></div></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const STORAGE_KEY = "kbc-future-me-poc-v2";
+      const stageOrder = [16, 26, 55];
+      const stageData = {
+        16: {
+          futureAge: 26, className: "first-salary", color: "#79d8c5", icon: "💸",
+          signal: "You selected first-job preparation. Future Me is asking what your first salary should make possible.",
+          kicker: "Future Me · age 26", title: "A first salary is getting closer.", text: "Meet the version of you who has had time to learn from the choices you make now.", place: "A new beginning",
+          message: "“Your first salary is getting closer. What would you like it to make possible?”", question: "What matters most right now?",
+          answers: [["independence", "More independence"], ["experience", "Travel the world"], ["security", "A sense of security"]],
+          followUp: "And what would be a good first step?", followAnswers: [["plan", "Make a simple plan"], ["learn", "Learn as I go"], ["small", "Start with something small"]],
+          memoryLabel: "First-salary value", card: "value",
+          dashboard: {
+            text: "Simple money tools for your first independent steps.",
+            balances: [["Everyday money", "€58.20"]],
+            tools: [["See this week's spending", "Easy tracking"], ["Send money to a friend", "Small transfers"]],
+            prompt: "✈️ Start a small travel goal"
+          }
+        },
+        26: {
+          futureAge: 36, className: "home", color: "#a995ef", icon: "🔑",
+          signal: "Fictional signal: a stable salary, rent payments and a savings milestone suggest a home-related moment.",
+          kicker: "Future Me · age 36", title: "Does a home still fit the life you want?", text: "Your future self remembers the value you chose before. Now a new possibility is taking shape.", place: "A place to belong",
+          message: "“At 16, you told me you wanted to <em>{value}</em>. Is that still a goal? I can help you understand how to save while you explore what home could mean.”", question: "How does this possibility feel?",
+          answers: [["buy", "I want to explore buying"], ["flexibility", "Flexibility matters more"], ["changed", "My priorities changed"]],
+          followUp: "What would help you take the next step?", followAnswers: [["timing", "Understand the timing"], ["costs", "See the full costs"], ["person", "Talk to an expert"]],
+          memoryLabel: "Home priority", card: "housing",
+          dashboard: {
+            text: "Your everyday money and longer-term choices, together.",
+            balances: [["Everyday account", "€3,420"], ["Investment account", "€1,260"]],
+            tools: [["Budget and bills", "Monthly overview"], ["Explore home readiness", "Mortgage education"]],
+            prompt: "🔑 See the questions people ask before buying"
+          }
+        },
+        55: {
+          futureAge: 67, className: "retirement", color: "#f1aa71", icon: "🌅",
+          signal: "Retirement exploration activated. This is a fictional demo trigger, not a prediction about your life.",
+          kicker: "Future Me · age 67", title: "What should life after work feel like?", text: "Meet your future self in a setting you choose. Independence can keep changing shape.", place: "A life with room to choose",
+          message: "“Independence has meant different things to us. What should it mean after full-time work?”", question: "Which future feels most like you?",
+          answers: [["travel", "Travel and discover"], ["family", "Time with family"], ["home", "Enjoy home life"]],
+          followUp: "What would make this feel more possible?", followAnswers: [["timing", "Know when I can start"], ["questions", "Prepare my questions"], ["options", "Understand my options"]],
+          memoryLabel: "Retirement picture", card: "retirement",
+          dashboard: {
+            text: "A broader view of the money and time you have built.",
+            balances: [["Everyday account", "€9,880"], ["Investment account", "€48,600"]],
+            tools: [["Pension overview", "Your retirement picture"], ["How pension funds work", "Education, not advice"]],
+            prompt: "☀️ Prepare questions for a retirement conversation"
+          }
+        }
+      };
+      const fallback = {
+        message: "I’m having trouble shaping that moment, so I’ll keep this simple. You can reflect on what matters and choose a safe next step.",
+        question: "What would you like to do?",
+        answers: [["learn", "Learn more"], ["person", "Talk to a person"], ["later", "Come back later"]]
+      };
+      const lifeHistory = [
+        { stage: 16, age: "12", icon: "🌱", title: "First account opened", detail: "A simple place for pocket money and small saving goals." },
+        { stage: 16, age: "15", icon: "✈️", title: "Travel the world became a goal", detail: "Saved as a fictional demo memory, ready for a later check-in." },
+        { stage: 26, age: "18", icon: "💸", title: "First salary arrived", detail: "A new income chapter started with a simple plan." },
+        { stage: 26, age: "21", icon: "🗺️", title: "First big trip happened", detail: "The travel goal became a real experience." },
+        { stage: 26, age: "24", icon: "🏠", title: "Rental home began", detail: "A new recurring rent payment became part of everyday money." },
+        { stage: 55, age: "42", icon: "🌿", title: "Long-term saving became routine", detail: "A habit that can support more than one future." },
+        { stage: 55, age: "54", icon: "☀️", title: "Retirement reflection started", detail: "A new chapter to explore at the customer's pace." }
+      ];
+      const initialState = () => ({ currentStage: 16, step: 0, selected: null, completed: [], memories: [], cards: {}, preview: false, pendingText: "" });
+      let state = loadState();
+      let toastTimer;
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!saved) return initialState();
+          return { ...initialState(), ...saved, completed: Array.isArray(saved.completed) ? saved.completed : [], memories: Array.isArray(saved.memories) ? saved.memories : [], cards: saved.cards || {} };
+        } catch (error) {
+          return initialState();
+        }
+      }
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+      function current() { return stageData[state.currentStage] || stageData[16]; }
+      function memory(key) { return state.memories.find((item) => item.key === key); }
+      function memoryValue(key, fallbackValue = "something important") { return memory(key)?.value || fallbackValue; }
+      function answerLabel(value) {
+        const all = Object.values(stageData).flatMap((stage) => [...stage.answers, ...stage.followAnswers]);
+        return all.find((answer) => answer[0] === value)?.[1] || value;
+      }
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+      }
+      function interpolate(value) {
+        return value.replaceAll("{value}", escapeHtml(memoryValue("value", "independence")));
+      }
+      function renderAnswers() {
+        const stage = current();
+        const options = state.step === 0 ? stage.answers : stage.followAnswers;
+        $("answers").innerHTML = options.map(([key, label]) => `<button class="answer" data-answer="${key}" type="button">${label}</button>`).join("");
+        $("answers").querySelectorAll(".answer").forEach((button) => button.addEventListener("click", () => {
+          submitReply(button.textContent, button.dataset.answer);
+        }));
+      }
+      function renderChat() {
+        const stage = current();
+        const initialMessage = interpolate(stage.message);
+        const followUp = `“${escapeHtml(stage.followUp)}”`;
+        const customerReply = escapeHtml(state.pendingText || answerLabel(state.pendingValue || ""));
+        let html = `<div class="chat-bubble"><span class="chat-label">Future Me</span>${initialMessage}</div>`;
+        if (state.step === 1) html += `<div class="chat-bubble customer"><span class="chat-label">You</span>${customerReply}</div><div class="chat-bubble"><span class="chat-label">Future Me</span>${followUp}</div>`;
+        $("chatLog").innerHTML = html;
+      }
+      function renderDashboard() {
+        const dashboard = current().dashboard;
+        $("bankingHomeText").textContent = dashboard.text;
+        $("uiStageTag").textContent = state.currentStage === 16 ? "Simple start" : state.currentStage === 26 ? "More to explore" : "Your fuller picture";
+        $("balanceGrid").innerHTML = dashboard.balances.map(([label, balance], index) => `<div class="balance${index ? " secondary-balance" : ""}"><small>${label}</small><strong>${balance}</strong></div>`).join("");
+        $("moneyTools").innerHTML = dashboard.tools.map(([title, detail]) => `<button class="money-tool" type="button" data-tool="${escapeHtml(title)}"><span>${detail}</span>${title}</button>`).join("");
+        $("lifePrompt").textContent = dashboard.prompt;
+        $("moneyTools").querySelectorAll(".money-tool").forEach((button) => button.addEventListener("click", () => openDialog(button.dataset.tool, "This is an illustrative, age-appropriate surface in the Future Me concept. It would offer clear information and customer-controlled next steps, not an automated financial decision.", "✦", false)));
+        $("lifePrompt").onclick = () => openDialog("A meaningful next step", state.currentStage === 26 ? "At 16, this fictional customer saved a wish to travel the world. Future Me can check in on that goal while helping them understand how a home might fit their priorities." : "This prompt connects a life moment with an optional next step. The customer stays in control of whether to explore it.", "✦", false);
+      }
+      function setScene() {
+        const stage = current();
+        $("scene").className = `scene ${stage.className}`;
+        $("signalIcon").textContent = stage.icon;
+        $("signalText").textContent = stage.signal;
+        $("sceneKicker").textContent = stage.kicker;
+        $("sceneTitle").textContent = stage.title;
+        $("sceneText").textContent = stage.text;
+        $("scenePlace").textContent = stage.place;
+        $("avatarAge").textContent = `Your future self · ${stage.futureAge}`;
+        document.documentElement.style.setProperty("--avatar-color", stage.color);
+        $("backpack").classList.toggle("visible", state.currentStage === 16);
+        $("scarf").classList.toggle("visible", state.currentStage === 26);
+        $("glasses").classList.toggle("visible", state.currentStage === 55);
+        $("flower").classList.toggle("visible", state.currentStage === 55);
+        $("question").textContent = state.step === 0 ? stage.question : stage.followUp;
+        $("memoryTag").textContent = state.step === 0 ? (state.memories.length ? `${state.memories.length} memory${state.memories.length > 1 ? "ies" : ""} carried forward` : "Nothing saved yet") : "One more reflection";
+        $("conversationTitle").textContent = state.step === 0 ? "Chat with Future Me" : "Continue the conversation";
+        $("conversationSubtitle").textContent = state.step === 0 ? "Use a suggested reply or type naturally. Future Me keeps the story focused." : "One more answer turns this conversation into a customer-approved memory.";
+        $("helper").textContent = state.step === 0 ? "This local demo recognises terms such as travel, independence, security and saving. Suggested replies always work." : "Reply naturally, or choose a suggested answer. Only the interpreted, customer-approved intent is saved.";
+        $("chatInput").placeholder = state.step === 0 ? "Try “I want to travel”" : "Type a reply, or use a suggestion";
+        renderChat();
+        renderAnswers();
+        renderDashboard();
+      }
+      function renderTimeline() {
+        document.querySelectorAll(".stage-button").forEach((button) => {
+          const stage = Number(button.dataset.stage);
+          button.classList.toggle("active", stage === state.currentStage);
+          button.classList.toggle("done", state.completed.includes(stage));
+          button.setAttribute("aria-current", stage === state.currentStage ? "step" : "false");
+        });
+        document.querySelectorAll(".tree-node").forEach((node) => {
+          const stage = Number(node.dataset.tree);
+          node.classList.toggle("done", state.completed.includes(stage));
+          node.classList.toggle("current", stage === state.currentStage && !state.completed.includes(stage));
+        });
+        $("treeStatus").textContent = `${state.completed.length} of 3 moments complete`;
+        $("treeMemoryCount").textContent = state.memories.length ? `${state.memories.length} memor${state.memories.length === 1 ? "y" : "ies"} saved` : "No memories yet";
+      }
+      function renderMemories() {
+        const labels = { value: ["✦", "At 16, you said", (item) => answerLabel(item.value)], home: ["⌂", "At 26, you explored", (item) => answerLabel(item.value)], picture: ["☼", "At 55, you pictured", (item) => answerLabel(item.value)] };
+        $("memoryList").innerHTML = state.memories.length ? state.memories.map((item) => {
+          const [icon, title, value] = labels[item.key] || ["•", "A saved memory", (memoryItem) => answerLabel(memoryItem.value)];
+          return `<div class="memory"><div class="memory-icon">${icon}</div><div><b>${title}</b><span>${escapeHtml(value(item))}</span></div></div>`;
+        }).join("") : '<div class="memory"><div class="memory-icon">✦</div><div><b>Your first branch is waiting</b><span>Complete the first conversation to save what matters.</span></div></div>';
+      }
+      function renderHistory() {
+        const visible = lifeHistory.filter((event) => event.stage <= state.currentStage);
+        $("historyList").innerHTML = visible.map((event) => `<div class="history-event"><div class="history-age">${event.age}</div><div><b>${event.icon} ${event.title}</b><span>${event.detail}</span></div></div>`).join("");
+      }
+      function renderCard() {
+        const card = state.cards[state.currentStage];
+        const container = $("conversationCard");
+        if (!card) { container.classList.add("hidden"); container.innerHTML = ""; return; }
+        const isHousing = card.type === "housing";
+        const isRetirement = card.type === "retirement";
+        const facts = isHousing
+          ? [["What matters", answerLabel(card.value)], ["Next question", answerLabel(card.followUp)], ["Possible next step", "Housing explainer"]]
+          : isRetirement
+            ? [["Future picture", answerLabel(card.value)], ["Question to bring", answerLabel(card.followUp)], ["Possible next step", "Retirement conversation"]]
+            : [["Your value", answerLabel(card.value)], ["First step", answerLabel(card.followUp)], ["Carried forward", "To your next chapter"]];
+        container.classList.remove("hidden");
+        const title = isHousing || isRetirement ? "A useful handoff, on your terms." : "Your first branch is growing.";
+        const summary = isHousing ? "You are exploring whether a home fits your life. This summary keeps your priorities and questions together without deciding for you." : isRetirement ? "You have started a reflection about life after full-time work. This summary prepares a conversation without presenting a product recommendation." : "You chose what you want your first salary to make possible. This memory can shape the questions Future Me asks later.";
+        const actions = isHousing || isRetirement ? '<button class="primary" id="learnButton" type="button">Learn more</button><button class="secondary" id="handoffButton" type="button">Prepare a KBC handoff</button>' : '<button class="primary" id="nextStageButton" type="button">Continue to age 26</button>';
+        container.innerHTML = `<div class="card-label">${isHousing ? "Housing Conversation Card" : isRetirement ? "Retirement Conversation Card" : "Life Tree memory"}</div><h3>${title}</h3><p class="card-summary">${summary}</p><div class="card-grid">${facts.map(([label, value]) => `<div class="card-fact"><small>${label}</small><strong>${escapeHtml(value)}</strong></div>`).join("")}</div><div class="card-actions">${actions}</div>`;
+        if (isHousing || isRetirement) {
+          $("learnButton").addEventListener("click", () => openDialog("Educational next step", isHousing ? "This could open a plain-language guide to home costs and questions. It does not calculate approval or recommend a mortgage." : "This could open a plain-language retirement explainer. It does not predict your pension or recommend an investment.", "📘", false));
+          $("handoffButton").addEventListener("click", () => openDialog("Confirm a fictional handoff", "Your Conversation Card is ready to take into a conversation with a KBC professional. This prototype will not book an appointment or share information. Continue only to show the confirmation state.", "🤝", true));
+        } else {
+          $("nextStageButton").addEventListener("click", () => startStage(26, false));
+        }
+      }
+      function update() {
+        setScene();
+        renderTimeline();
+        renderMemories();
+        renderHistory();
+        renderCard();
+        saveState();
+      }
+      function startStage(stage, guided = false) {
+        state.currentStage = stage;
+        state.step = 0;
+        state.selected = null;
+        state.preview = guided;
+        const needed = stage === 26 ? [["value", "experience"]] : stage === 55 ? [["value", "experience"], ["home", "flexibility"]] : [];
+        if (guided) needed.forEach(([key, value]) => { if (!memory(key)) state.memories.push({ key, value, stage: "guided-preview" }); });
+        $("previewBanner").classList.toggle("visible", guided);
+        $("previewBanner").textContent = guided ? "Guided preview: earlier answers below are labelled fictional demo memories so you can jump directly to this scene. The normal story saves them through the previous conversations." : "";
+        update();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function recognisedReply(input) {
+        const text = input.toLowerCase();
+        const stage = current();
+        const options = state.step === 0 ? stage.answers : stage.followAnswers;
+        const keywords = {
+          independence: ["independ", "freedom", "own"],
+          experience: ["travel", "world", "trip", "experience"],
+          security: ["secure", "safety", "buffer", "save"],
+          buy: ["buy", "own", "purchase"],
+          flexibility: ["flexib", "rent", "move"],
+          changed: ["changed", "different", "other"],
+          travel: ["travel", "trip", "discover"],
+          family: ["family", "children", "grand"],
+          home: ["home", "garden", "quiet"],
+          plan: ["plan", "budget"],
+          learn: ["learn", "understand"],
+          small: ["small", "start"],
+          timing: ["when", "timing"],
+          costs: ["cost", "price", "afford"],
+          person: ["person", "expert", "adviser"],
+          questions: ["question", "ask"],
+          options: ["option", "overview"]
+        };
+        return options.find(([key, label]) => text.includes(label.toLowerCase()) || (keywords[key] || []).some((word) => text.includes(word)))?.[0] || null;
+      }
+      function submitReply(text, forcedKey = null) {
+        const trimmed = text.trim();
+        const key = forcedKey || recognisedReply(trimmed);
+        if (!key) {
+          $("helper").textContent = "I did not recognise that in this controlled demo. Try a suggested reply or words such as travel, independence, saving, timing, costs or family.";
+          $("chatInput").focus();
+          return;
+        }
+        $("chatInput").value = "";
+        if (state.step === 0) {
+          state.step = 1;
+          state.pendingKey = state.currentStage === 16 ? "value" : state.currentStage === 26 ? "home" : "picture";
+          state.pendingValue = key;
+          state.pendingText = trimmed || answerLabel(key);
+          update();
+          return;
+        }
+        state.selected = key;
+        state.replyText = trimmed || answerLabel(key);
+        continueConversation();
+      }
+      function continueConversation() {
+        if (!state.selected || state.step !== 1) return;
+        const stage = current();
+        const key = state.pendingKey || (state.currentStage === 16 ? "value" : state.currentStage === 26 ? "home" : "picture");
+        const existing = state.memories.find((item) => item.key === key);
+        if (existing) {
+          existing.value = state.pendingValue;
+          existing.followUp = state.selected;
+        } else {
+          state.memories.push({ key, value: state.pendingValue, followUp: state.selected, stage: state.currentStage });
+        }
+        state.completed = [...new Set([...state.completed, state.currentStage])];
+        state.cards[state.currentStage] = { type: state.currentStage === 16 ? "value" : stage.card, value: state.pendingValue, followUp: state.selected };
+        state.step = 0;
+        state.selected = null;
+        state.pendingKey = null;
+        state.pendingValue = null;
+        state.pendingText = "";
+        state.replyText = "";
+        update();
+        showToast(state.currentStage === 16 ? "Your first Life Tree branch is growing." : "Your memory is saved and ready for the next chapter.");
+      }
+      let dialogAction = null;
+      function openDialog(title, text, icon, confirmable, action = null) {
+        $("dialogTitle").textContent = title;
+        $("dialogText").textContent = text;
+        $("dialogIcon").textContent = icon;
+        $("dialogConfirm").style.display = confirmable ? "inline-block" : "none";
+        $("dialogConfirm").textContent = "Show confirmation";
+        dialogAction = action;
+        $("dialog").showModal();
+      }
+      function showToast(text) {
+        const toast = $("toast");
+        toast.textContent = text;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+      }
+      document.querySelectorAll("[data-stage]").forEach((button) => button.addEventListener("click", () => {
+        const stage = Number(button.dataset.stage);
+        const prerequisite = stage === 26 ? 16 : stage === 55 ? 26 : null;
+        const guided = Boolean(prerequisite && !state.completed.includes(prerequisite));
+        startStage(stage, guided);
+      }));
+      $("chatComposer").addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitReply($("chatInput").value);
+      });
+      $("dialogClose").addEventListener("click", () => $("dialog").close());
+      $("dialog").addEventListener("click", (event) => { if (event.target === $("dialog")) $("dialog").close(); });
+      $("dialogConfirm").addEventListener("click", () => {
+        if (dialogAction) {
+          const action = dialogAction;
+          dialogAction = null;
+          action();
+        } else {
+          $("dialog").close();
+          showToast("Fictional handoff confirmed. Nothing was booked or shared.");
+        }
+      });
+      $("resetButton").addEventListener("click", () => openDialog("Reset this demo?", "This clears the fictional memories and returns to the first-salary conversation. No account or KBC data is affected.", "↺", true, () => {
+        state = initialState();
+        localStorage.removeItem(STORAGE_KEY);
+        $("previewBanner").classList.remove("visible");
+        $("dialog").close();
+        update();
+        showToast("The demo is ready to begin again.");
+      }));
+      update();
+    })();
+  </script>
+</body>
+</html>
