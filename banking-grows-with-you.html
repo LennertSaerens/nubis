@@ -96,6 +96,21 @@
     .money-tool:hover, .life-prompt:hover { border-color: #7da5ff; color: var(--blue-dark); background: #f7f9ff; }
     .money-tool span { display: block; margin-bottom: 3px; color: #8290a4; font-size: 9px; font-weight: 650; }
     .life-prompt { width: 100%; margin-top: 9px; border-color: #d9e5ff; color: #31528b; background: #f4f8ff; }
+    .wealth-card { display: none; margin: -4px 0 14px; overflow: hidden; border: 1px solid #d9e5ef; border-radius: 18px; background: linear-gradient(135deg, #fbfdfd, #eef8f5); }
+    .wealth-card.visible { display: block; }
+    .wealth-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 15px 15px 0; }
+    .wealth-kicker { margin-bottom: 3px; color: #287457; font-size: 9px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
+    .wealth-head h3 { margin: 0; font-size: 15px; letter-spacing: -.03em; }
+    .wealth-value { color: #1d6e51; text-align: right; font-size: 18px; font-weight: 900; letter-spacing: -.04em; white-space: nowrap; }
+    .wealth-value small { display: block; margin-top: 2px; color: #638274; font-size: 8px; font-weight: 750; letter-spacing: 0; }
+    .wealth-chart { display: block; width: 100%; height: auto; margin-top: 7px; }
+    .wealth-chart-grid { stroke: #d9ebe4; stroke-width: 1; }
+    .wealth-chart-area { fill: url(#wealthArea); opacity: .65; }
+    .wealth-chart-line { fill: none; stroke: #24936a; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .wealth-chart-dot { fill: #fff; stroke: #24936a; stroke-width: 2.5; }
+    .wealth-chart-label { fill: #789185; font-size: 8px; font-weight: 700; }
+    .wealth-note { margin: 0; padding: 7px 15px 13px; color: #71867c; font-size: 9px; line-height: 1.45; }
+    .wealth-note strong { color: #47695c; }
     .conversation { margin-top: 14px; padding: 17px; border: 1px solid #e6ebf3; border-radius: 18px; background: #fff; }
     .conversation-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
     .conversation-head h3 { margin: 0 0 4px; font-size: 14px; letter-spacing: -.02em; }
@@ -191,6 +206,8 @@
       .avatar-halo { width: 125px; height: 125px; bottom: 26px; }
       .conversation { padding: 14px; }
       .balance-grid { grid-template-columns: 1fr; }
+      .wealth-head { padding: 13px 13px 0; }
+      .wealth-note { padding-right: 13px; padding-left: 13px; }
       .card-grid { grid-template-columns: 1fr; }
       .side { grid-template-columns: 1fr; }
     }
@@ -233,6 +250,22 @@
             <div class="balance-grid" id="balanceGrid"></div>
             <div class="money-tools" id="moneyTools"></div>
             <button class="life-prompt" id="lifePrompt" type="button"></button>
+          </section>
+          <section class="wealth-card" id="wealthCard" aria-labelledby="wealthTitle">
+            <div class="wealth-head">
+              <div><div class="wealth-kicker">Age 55 · Wealth overview</div><h3 id="wealthTitle">Your investment journey</h3></div>
+              <div class="wealth-value" id="wealthValue">€48,600<small>illustrative value</small></div>
+            </div>
+            <svg class="wealth-chart" viewBox="0 0 580 190" role="img" aria-label="Illustrative five-year investment journey rising from 31,000 euros to 48,600 euros">
+              <defs><linearGradient id="wealthArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#75d4ae"/><stop offset="100%" stop-color="#75d4ae" stop-opacity="0"/></linearGradient></defs>
+              <path class="wealth-chart-grid" d="M50 38H550M50 83H550M50 128H550"/>
+              <path class="wealth-chart-area" d="M54 143 L154 125 L254 100 L354 111 L454 70 L544 43 L544 158 L54 158Z"/>
+              <path class="wealth-chart-line" d="M54 143 L154 125 L254 100 L354 111 L454 70 L544 43"/>
+              <circle class="wealth-chart-dot" cx="54" cy="143" r="4"/><circle class="wealth-chart-dot" cx="154" cy="125" r="4"/><circle class="wealth-chart-dot" cx="254" cy="100" r="4"/><circle class="wealth-chart-dot" cx="354" cy="111" r="4"/><circle class="wealth-chart-dot" cx="454" cy="70" r="4"/><circle class="wealth-chart-dot" cx="544" cy="43" r="4"/>
+              <text class="wealth-chart-label" x="54" y="177" text-anchor="middle">50</text><text class="wealth-chart-label" x="154" y="177" text-anchor="middle">51</text><text class="wealth-chart-label" x="254" y="177" text-anchor="middle">52</text><text class="wealth-chart-label" x="354" y="177" text-anchor="middle">53</text><text class="wealth-chart-label" x="454" y="177" text-anchor="middle">54</text><text class="wealth-chart-label" x="544" y="177" text-anchor="middle">55</text>
+              <text class="wealth-chart-label" x="8" y="42">€50k</text><text class="wealth-chart-label" x="8" y="87">€40k</text><text class="wealth-chart-label" x="8" y="132">€30k</text>
+            </svg>
+            <p class="wealth-note"><strong>Illustrative history only.</strong> It helps you see how your investments have grown over time; it is not a forecast, recommendation, or guarantee of future returns.</p>
           </section>
           <section class="scene first-salary" id="scene" aria-labelledby="sceneTitle">
             <div class="scene-copy"><div class="scene-kicker" id="sceneKicker">Future Me · age 26</div><h2 id="sceneTitle">A first salary is getting closer.</h2><p id="sceneText">Meet the version of you who has had time to learn from the choices you make now.</p><span class="scene-place" id="scenePlace">A new beginning</span></div>
@@ -411,6 +444,7 @@
         $("balanceGrid").innerHTML = dashboard.balances.map(([label, balance], index) => `<div class="balance${index ? " secondary-balance" : ""}"><small>${label}</small><strong>${balance}</strong></div>`).join("");
         $("moneyTools").innerHTML = dashboard.tools.map(([title, detail]) => `<button class="money-tool" type="button" data-tool="${escapeHtml(title)}"><span>${detail}</span>${title}</button>`).join("");
         $("lifePrompt").textContent = dashboard.prompt;
+        $("wealthCard").classList.toggle("visible", state.currentStage === 55);
         $("moneyTools").querySelectorAll(".money-tool").forEach((button) => button.addEventListener("click", () => openDialog(button.dataset.tool, "This is an illustrative, age-appropriate surface in the Future Me concept. It would offer clear information and customer-controlled next steps, not an automated financial decision.", "✦", false)));
         $("lifePrompt").onclick = () => openDialog("A meaningful next step", state.currentStage === 26 ? "At 16, this fictional customer saved a wish to travel the world. Future Me can check in on that goal while helping them understand how a home might fit their priorities." : "This prompt connects a life moment with an optional next step. The customer stays in control of whether to explore it.", "✦", false);
       }

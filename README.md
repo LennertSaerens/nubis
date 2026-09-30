@@ -10,7 +10,7 @@ Open `banking-grows-with-you.html` in a modern browser. No install, server, API 
 
 1. Start at **16 · First salary**. Notice that the home shows one simple everyday balance and only lightweight tracking/transfer tools. Type **“I want to travel the world”** or use that suggested reply, then answer the follow-up. The first Life Tree branch and memory appear.
 2. Select **26 · A home**. The home has evolved to show everyday and investment balances, a budget surface, and mortgage-readiness education. The fictional signal explains that salary, rent, and a savings milestone were detected. Future Me checks whether the travel goal is still important while the customer considers a home. Choose a home priority and follow-up question to generate a **Housing Conversation Card**.
-3. Select **55 · Retirement**. The home retains the two-balance model and adds a pension overview plus education about how pension funds work—not a recommendation. Choose a future setting and a question to generate a **Retirement Conversation Card**. The Life Tree shows the fictional history that connects early goals to later chapters.
+3. Select **55 · Retirement**. The home retains the two-balance model and adds a pension overview, education about how pension funds work, and a dedicated wealth overview with an illustrative five-year investment journey—not a forecast or recommendation. Choose a future setting and a question to generate a **Retirement Conversation Card**. The Life Tree shows the fictional history that connects early goals to later chapters.
 4. Open either card’s educational next step or prepare a fictional handoff. The prototype confirms that nothing is booked or shared.
 
 The stage buttons support a clearly labelled **guided preview** for jumping directly to a later scene. Preview memories are explicitly marked as fictional seeded context; the main story should be shown linearly.
@@ -18,7 +18,7 @@ The stage buttons support a clearly labelled **guided preview** for jumping dire
 ## What is demonstrated
 
 - **Understand:** controlled fictional signals and the customer’s current answer.
-- **Adapt:** stage-specific scenes, dialogue, avatar states, remembered values, and banking surfaces: simple money tools at 16, home-readiness education at 26, and pension-fund education at 55.
+- **Adapt:** stage-specific scenes, dialogue, avatar states, remembered values, and banking surfaces: simple money tools at 16, home-readiness education at 26, and a wealth overview plus pension-fund education at 55.
 - **Scale:** one controlled conversation shape across first salary, home, and retirement moments.
 - **Safety:** no product recommendation, credit decision, transaction, booking, data sharing, or unbounded AI output.
 
