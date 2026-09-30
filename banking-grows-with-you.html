@@ -74,11 +74,7 @@
     .scene-place { display: inline-flex; margin-top: 15px; padding: 6px 8px; border: 1px solid #ffffff3b; border-radius: 999px; color: #f5f8ff; background: #ffffff12; font-size: 9px; font-weight: 750; }
     .avatar-wrap { position: absolute; z-index: 1; right: clamp(8px, 4vw, 38px); bottom: 4px; width: min(40%, 230px); text-align: center; }
     .avatar-halo { position: absolute; width: 170px; height: 170px; right: 50%; bottom: 17px; border: 1px solid #ffffff26; border-radius: 50%; background: #ffffff12; transform: translateX(50%); }
-    .avatar { position: relative; width: min(100%, 190px); filter: drop-shadow(0 12px 12px #091d5730); animation: float 3.5s ease-in-out infinite; }
-    .avatar-body { fill: var(--avatar-color, #79d8c5); transition: fill .25s ease; }
-    .avatar-eye { fill: #24334c; }
-    .avatar-accessory { opacity: 0; transition: opacity .2s; }
-    .avatar-accessory.visible { opacity: 1; }
+    .avatar-portrait { position: relative; display: block; width: min(100%, 235px); height: auto; filter: drop-shadow(0 12px 12px #091d5730); animation: float 3.5s ease-in-out infinite; }
     .age-badge { position: relative; z-index: 2; display: inline-block; margin-top: -4px; padding: 5px 8px; border-radius: 999px; color: #173873; background: #fff; font-size: 9px; font-weight: 850; }
     @keyframes float { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-5px) rotate(1deg); } }
     .banking-home { margin-bottom: 14px; padding: 15px; border: 1px solid #e6ebf3; border-radius: 18px; background: linear-gradient(130deg, #fff, #f8faff); }
@@ -253,7 +249,7 @@
       .scene p { font-size: 13px; }
       .scene-place { font-size: 10px; }
       .avatar-wrap { width: min(40%, 250px); }
-      .avatar { width: min(100%, 208px); }
+      .avatar-portrait { width: min(100%, 255px); }
       .conversation { padding: 20px; }
       .conversation-player { width: 39px; height: 39px; }
       .conversation-player svg { width: 19px; height: 19px; }
@@ -358,24 +354,7 @@
           </section>
           <section class="scene first-salary" id="scene" aria-labelledby="sceneTitle">
             <div class="scene-copy"><div class="scene-kicker" id="sceneKicker">Nubis · age 26</div><h2 id="sceneTitle">A first salary is getting closer.</h2><p id="sceneText">Meet the version of you who has had time to learn from the choices you make now.</p><span class="scene-place" id="scenePlace">A new beginning</span></div>
-            <div class="avatar-wrap" aria-label="Nubis avatar"><div class="avatar-halo"></div>
-              <svg class="avatar" viewBox="0 0 200 200" role="img" aria-label="A cartoon version of Nubis">
-                <ellipse cx="100" cy="174" rx="52" ry="9" fill="#071b4d" opacity=".16"/>
-                <path d="M51 100c0-34 21-56 49-56s49 22 49 56v33c0 24-21 37-49 37s-49-13-49-37z" class="avatar-body"/>
-                <path d="M68 127c8-8 56-8 64 0v17c0 10-13 17-32 17s-32-7-32-17z" fill="#ffffff55"/>
-                <ellipse cx="58" cy="106" rx="11" ry="16" class="avatar-body"/><ellipse cx="142" cy="106" rx="11" ry="16" class="avatar-body"/>
-                <ellipse cx="83" cy="99" rx="4.4" ry="6" class="avatar-eye"/><ellipse cx="117" cy="99" rx="4.4" ry="6" class="avatar-eye"/>
-                <circle cx="72" cy="112" r="5" fill="#ff9b9e" opacity=".78"/><circle cx="128" cy="112" r="5" fill="#ff9b9e" opacity=".78"/>
-                <path d="M91 115c4 5 14 5 18 0" fill="none" stroke="#24334c" stroke-width="3" stroke-linecap="round"/>
-                <path d="M97 45c-1-13-9-17-16-23 14-1 22 7 21 20 4-12 13-18 25-17-8 7-10 14-12 22" fill="#b5f18c" stroke="#2f855f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M101 48c-1-9-1-14 0-19" fill="none" stroke="#2f855f" stroke-width="2.5" stroke-linecap="round"/>
-                <g id="backpack" class="avatar-accessory"><path d="M50 112c-8 2-12 10-11 24 1 12 5 19 13 20l7-10-2-30z" fill="#f5a84a" stroke="#fff" stroke-width="2"/><path d="M42 134h14" stroke="#fff" stroke-width="2" opacity=".8"/></g>
-                <g id="scarf" class="avatar-accessory"><path d="M72 126c17 8 38 8 56 0l-4 10c-17 9-31 9-48 0z" fill="#ffd05c" stroke="#fff" stroke-width="2"/><path d="M113 134l7 20 11-5-4-20" fill="#ffd05c" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></g>
-                <g id="glasses" class="avatar-accessory" fill="none" stroke="#244a8f" stroke-width="3"><circle cx="83" cy="99" r="10"/><circle cx="117" cy="99" r="10"/><path d="M93 99h14"/></g>
-                <g id="flower" class="avatar-accessory"><circle cx="145" cy="63" r="5" fill="#ffcf62"/><circle cx="145" cy="54" r="5" fill="#ff9bb0"/><circle cx="153" cy="62" r="5" fill="#ff9bb0"/><circle cx="145" cy="70" r="5" fill="#ff9bb0"/><circle cx="137" cy="62" r="5" fill="#ff9bb0"/></g>
-              </svg>
-              <span class="age-badge" id="avatarAge">Your future self · 26</span>
-            </div>
+            <div class="avatar-wrap" aria-label="Nubis avatar"><div class="avatar-halo"></div><img class="avatar-portrait" id="nubisPortrait" src="assets/nubis-16.png" alt="Nubis at age 16"><span class="age-badge" id="avatarAge">Nubis · age 16</span></div>
           </section>
 
           <section class="conversation" aria-live="polite">
@@ -418,9 +397,9 @@
       const stageOrder = [16, 26, 55];
       const stageData = {
         16: {
-          futureAge: 26, className: "first-salary", color: "#79d8c5", icon: "💸",
+          futureAge: 16, className: "first-salary", color: "#79d8c5", icon: "💸",
           signal: "You selected first-job preparation. Nubis is asking what your first salary should make possible.",
-          kicker: "Nubis · age 26", title: "A first salary is getting closer.", text: "Meet the version of you who has had time to learn from the choices you make now.", place: "A new beginning",
+          kicker: "Nubis · age 16", title: "A first salary is getting closer.", text: "Meet the companion that grows alongside the choices you make now.", place: "A new beginning",
           message: "“Your first salary is getting closer. What would you like it to make possible?”", question: "What matters most right now?",
           answers: [["independence", "More independence"], ["experience", "Travel the world"], ["security", "A sense of security"]],
           followUp: "And what would be a good first step?", followAnswers: [["plan", "Make a simple plan"], ["learn", "Learn as I go"], ["small", "Start with something small"]],
@@ -433,9 +412,9 @@
           }
         },
         26: {
-          futureAge: 36, className: "home", color: "#a995ef", icon: "🔑",
+          futureAge: 26, className: "home", color: "#a995ef", icon: "🔑",
           signal: "Fictional signal: a stable salary, rent payments and a savings milestone suggest a home-related moment.",
-          kicker: "Nubis · age 36", title: "Does a home still fit the life you want?", text: "Nubis remembers the value you chose before. Now a new possibility is taking shape.", place: "A place to belong",
+          kicker: "Nubis · age 26", title: "Does a home still fit the life you want?", text: "Nubis remembers the value you chose before. Now a new possibility is taking shape.", place: "A place to belong",
           message: "“At 16, you told me you wanted to <em>{value}</em>. Is that still a goal? I can help you understand how to save while you explore what home could mean.”", question: "How does this possibility feel?",
           answers: [["buy", "I want to explore buying"], ["flexibility", "Flexibility matters more"], ["changed", "My priorities changed"]],
           followUp: "What would help you take the next step?", followAnswers: [["timing", "Understand the timing"], ["costs", "See the full costs"], ["person", "Talk to an expert"]],
@@ -448,9 +427,9 @@
           }
         },
         55: {
-          futureAge: 67, className: "retirement", color: "#f1aa71", icon: "🌅",
+          futureAge: 55, className: "retirement", color: "#f1aa71", icon: "🌅",
           signal: "Retirement exploration activated. This is a fictional demo trigger, not a prediction about your life.",
-          kicker: "Nubis · age 67", title: "What should life after work feel like?", text: "Meet Nubis in a setting you choose. Independence can keep changing shape.", place: "A life with room to choose",
+          kicker: "Nubis · age 55", title: "What should life after work feel like?", text: "Meet Nubis in a setting you choose. Independence can keep changing shape.", place: "A life with room to choose",
           message: "“Independence has meant different things to us. What should it mean after full-time work?”", question: "Which future feels most like you?",
           answers: [["travel", "Travel and discover"], ["family", "Time with family"], ["home", "Enjoy home life"]],
           followUp: "What would make this feel more possible?", followAnswers: [["timing", "Know when I can start"], ["questions", "Prepare my questions"], ["options", "Understand my options"]],
@@ -493,6 +472,11 @@
           ["Theo", "I like that. It feels like planning for life, not just retirement."],
           ["Nubis", "Exactly. When you're ready, let's take this to a KBC investment advisor and turn it into a plan with the real numbers."]
         ]
+      };
+      const companionPortraits = {
+        16: "assets/nubis-16.png",
+        26: "assets/nubis-26.png",
+        55: "assets/nubis-55.png"
       };
       const lifeHistory = [
         { stage: 16, age: "12", icon: "🌱", title: "First account opened", detail: "A simple place for pocket money and small saving goals." },
@@ -654,11 +638,8 @@
         $("sceneText").textContent = stage.text;
         $("scenePlace").textContent = stage.place;
         $("avatarAge").textContent = `Nubis · age ${stage.futureAge}`;
-        document.documentElement.style.setProperty("--avatar-color", stage.color);
-        $("backpack").classList.toggle("visible", state.currentStage === 16);
-        $("scarf").classList.toggle("visible", state.currentStage === 26);
-        $("glasses").classList.toggle("visible", state.currentStage === 55);
-        $("flower").classList.toggle("visible", state.currentStage === 55);
+        $("nubisPortrait").src = companionPortraits[state.currentStage];
+        $("nubisPortrait").alt = `Nubis at age ${stage.futureAge}`;
         $("question").textContent = state.step === 0 ? stage.question : stage.followUp;
         $("conversationTitle").textContent = "Talk with Nubis";
         $("conversationSubtitle").textContent = "Tap the microphone to play this life moment.";
